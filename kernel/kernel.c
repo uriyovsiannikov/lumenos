@@ -20,7 +20,6 @@
 #include "../modules/mm/mm.h"
 #include "../apps/memmap.h"
 #include "../libs/ctype.h"
-#include "bootboot.h"
 #define HEAP_SIZE (1024 * 1024) 
 #define MULTIBOOT_BOOTLOADER_MAGIC 0x2BADB002
 #define MULTIBOOT_INFO_MEMORY       0x00000001
@@ -37,7 +36,6 @@
 #define MULTIBOOT_INFO_VBE_INFO     0x00000800
 #define MULTIBOOT_INFO_FRAMEBUFFER_INFO 0x00001000
 #define FILENAME_LEN FS_FILENAME_LEN
-#define BOOTBOOT_MAGIC 0xB007B007
 __attribute__((section(".text")))
 void _start(void) {
 }
@@ -140,38 +138,24 @@ static void create_syscfg() {
     fs_create("TEMP", 1, current_dir_id, true);
 	fs_create("SYSADJ.SYS", 0, current_dir_id, true);
 }
-void kernel_main(uint32_t magic, uint32_t *info_ptr) {
+void kernel_main(uint32_t magic, uint32_t *mb_info) {
     if (magic == MULTIBOOT_BOOTLOADER_MAGIC) {
-        print("Multiboot loader detected\n", WHITE);
-        multiboot_info_t *mbi = (multiboot_info_t *)info_ptr;
+        multiboot_info_t *mbi = (multiboot_info_t *)mb_info;
         if (mbi->flags & MULTIBOOT_INFO_CMDLINE) {
             char *cmdline = (char *)(mbi->cmdline);
             check_boot_args(cmdline);
         }
-        init_memory_map(magic, (uint32_t*)info_ptr);
-        
-    } else if (magic == BOOTBOOT_MAGIC) {
-        print("BOOTBOOT loader detected\n", WHITE);
-        bootboot_t* bb = (bootboot_t*)info_ptr;
-        if (bb->initrd_ptr) {
-        }
-        
-    } else {
-        print("Unknown bootloader magic: ", LIGHT_RED);
-        char buf[16];
-        itoa(magic, buf, 16);
-        print(buf, LIGHT_RED);
-        print("\n", LIGHT_RED);
     }
-    init_state();
-    create_syscfg();
-    print("\nBootloader magic: ", WHITE);
+    init_memory_map(magic, (uint32_t*)mb_info);
+	init_state();
+	create_syscfg();
+    print("\nMultiboot magic: ", WHITE);
     char magic_buf[16];
     itoa(magic, magic_buf, 16);
     print_info("0x");
     print_info(magic_buf);
     print_info("\n");
-    booticon();
+	booticon();
     if (secured_mode) {
         print("LumenOS v0.4 (Secured mode)\n", LIGHT_CYAN);
     } else {
