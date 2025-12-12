@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 #define RAND_MAX 32767
 static unsigned long next = 1;
 int rand(void) {

@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 #include "memmap.h"
 #include "../libs/print.h"
 #include "../libs/string.h"

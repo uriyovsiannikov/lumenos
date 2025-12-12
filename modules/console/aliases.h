@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 #ifndef ALIASES_H
 #define ALIASES_H
 #include <stdint.h>

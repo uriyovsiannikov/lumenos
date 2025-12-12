@@ -1,4 +1,4 @@
-/* include/stdint.h */
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 #ifndef _STDINT_H
 #define _STDINT_H
 typedef signed char int8_t;

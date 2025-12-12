@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 #ifndef VGA_H
 #define VGA_H
 enum GfxMode {

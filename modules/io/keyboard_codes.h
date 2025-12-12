@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 #ifndef KEYBOARD_CODES_H
 #define KEYBOARD_CODES_H
 #define KEY_F1 0x3B

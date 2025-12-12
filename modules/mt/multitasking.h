@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 #ifndef MULTITASKING_H
 #define MULTITASKING_H
 #include <stdint.h>

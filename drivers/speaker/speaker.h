@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 #ifndef SPEAKER_H
 #define SPEAKER_H
 #include <stdint.h>

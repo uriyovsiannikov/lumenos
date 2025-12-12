@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 #include "../modules/syslogger/syslogger.h"
 #include "../libs/print.h"
 #include "../modules/io/io.h"

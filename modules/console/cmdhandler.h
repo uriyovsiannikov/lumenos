@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 #ifndef CMDHANDLER_H
 #define CMDHANDLER_H
 #include <stdint.h>

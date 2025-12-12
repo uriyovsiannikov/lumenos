@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 #include "stdio.h"
 #include <stdarg.h>
 int sscanf(const char *str, const char *fmt, ...) {

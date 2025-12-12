@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 #include "../libs/print.h"
 void show_ascii_table() {
     print_info("\nASCII table (32-127):");

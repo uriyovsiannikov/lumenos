@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 #ifndef CPUFREQ_H
 #define CPUFREQ_H
 #include <stdint.h>

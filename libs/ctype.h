@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 #ifndef CTYPE_H
 #define CTYPE_H
 int isalnum(int c);

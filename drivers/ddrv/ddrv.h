@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 #ifndef DDRV_H
 #define DDRV_H
 #include <stdint.h>

@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 #ifndef SYSLOGGER_H
 #define SYSLOGGER_H
 #define MAX_LOG_ENTRIES 100

@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 #ifndef REGISTER_H
 #define REGISTER_H
 typedef unsigned char u8;

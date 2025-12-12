@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 #ifndef MODE03_H
 #define MODE03_H
 #include "register.h"

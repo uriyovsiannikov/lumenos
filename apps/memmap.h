@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 #ifndef MEMMAP_H
 #define MEMMAP_H
 #include <stdint.h>

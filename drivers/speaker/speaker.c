@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 #include "speaker.h"
 #include "../modules/io/io.h"
 #include "../modules/timer/timer.h"

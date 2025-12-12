@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 #include "sgl.h"
 #include "../drivers/vga/vga.h"
 #include "../libs/print.h"

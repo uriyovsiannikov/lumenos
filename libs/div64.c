@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 #include <stdint.h>
 uint64_t __udivdi3(uint64_t num, uint64_t den) {
     uint64_t quot = 0, qbit = 1;

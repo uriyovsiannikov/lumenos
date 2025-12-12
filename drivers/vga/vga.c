@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 #include "vga.h"
 #include "io.h"
 #include "mode13.h"

@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 #ifndef STRING_H
 #define STRING_H
 #include <stddef.h>

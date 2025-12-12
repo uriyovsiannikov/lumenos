@@ -1,3 +1,7 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+// -------------------------
+//     main kernel code
+// -------------------------
 #include <stdint.h>
 #include <stdarg.h>
 #include <stddef.h>

@@ -1,3 +1,4 @@
+; SPDX-License-Identifier: GPL-3.0-or-later
 ;==== Multiboot Header ====
 section .multiboot
 align 4

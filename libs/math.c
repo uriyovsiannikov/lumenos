@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 #include "math.h"
 static double _sin_approx(double x) {
     double result = x;
