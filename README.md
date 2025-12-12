@@ -2,27 +2,46 @@
 
 *Features:*
   Basic I/O system -- DONE
+  
   Console -- DONE
+  
   File System -- DONE
+  
   Memory Managment -- DONE
+  
   Multitasking -- BROKEN
+  
   Panic handlers -- IN PROGRESS
+  
   Power Managment -- DONE
+  
   System logging -- DONE
+  
   Timers -- DONE
+  
   Simple BASIC -- DONE
 
 *Drivers:*
   Disk driver -- DONE
+  
   Serial driver -- DONE
+  
   Speaker driver -- DONE
+  
   Vga (graphics) -- DONE
+  
 
 *Included apps:*
   ASCII table
+  
   Calculator
+  
   Clock
+  
   Memory Map
+  
   Spreadsheet editor
+  
   System info
+  
   Text Editor
