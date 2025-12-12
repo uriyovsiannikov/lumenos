@@ -1,4 +1,5 @@
 **32 Bit OS written in C & Assembly**
+
 *Features:*
   Basic I/O system -- DONE
   Console -- DONE
@@ -10,11 +11,13 @@
   System logging -- DONE
   Timers -- DONE
   Simple BASIC -- DONE
+
 *Drivers:*
   Disk driver -- DONE
   Serial driver -- DONE
   Speaker driver -- DONE
   Vga (graphics) -- DONE
+
 *Included apps:*
   ASCII table
   Calculator
