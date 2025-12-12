@@ -26,3 +26,17 @@
 - Spreadsheet editor
 - System info
 - Text Editor
+
+**Building & Running**
+
+To build *LumenOS* you need to install some packages:
+
+> sudo apt-get install nasm grub2 xorriso make mtools gcc-multilib build-essential qemu-system-x86
+
+Then execute:
+
+> make clean && make
+
+And run:
+
+> make run
