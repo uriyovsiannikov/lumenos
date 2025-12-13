@@ -27,7 +27,7 @@
 - System info
 - Text Editor
 
-**Building & Running**
+**Building & Running** (test)
 
 To build *LumenOS* you need to install some packages:
 
