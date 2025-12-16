@@ -15,6 +15,7 @@
 #include "../modules/syslogger/syslogger.h"
 #include "../modules/console/cmdhandler.h"
 #include "../libs/ctype.h"
+#include "../drivers/serial/serial.h"
 #define HEAP_SIZE (1024 * 1024) 
 #define MULTIBOOT_BOOTLOADER_MAGIC 0x2BADB002
 #define MULTIBOOT_INFO_MEMORY       0x00000001
@@ -121,6 +122,7 @@ static void init_state() {
     mt_init();
 	panic_init();
 	paging_init();
+    serial_init_default();
     asm volatile("sti");
 }
 static void create_syscfg() {
