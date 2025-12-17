@@ -5,7 +5,6 @@
 void serial_init(uint16_t port) {
     outb(port + 1, 0x00);
     outb(port + 3, SERIAL_LINE_ENABLE_DLAB);
-    // Низкий байт делителя
     outb(port + 0, 0x03);
     outb(port + 1, 0x00);
     outb(port + 3, SERIAL_LINE_8BIT | SERIAL_LINE_NO_PARITY | SERIAL_LINE_1_STOP_BIT);
@@ -40,7 +39,7 @@ void serial_write(uint16_t port, const char* str) {
     }
 }
 void serial_write_hex(uint16_t port, uint32_t num) {
-    char buf[11]; // "0x" + 8 hex digits + '\0'
+    char buf[11];
     buf[0] = '0';
     buf[1] = 'x';
     buf[10] = '\0';
@@ -56,7 +55,7 @@ void serial_write_dec(uint16_t port, uint32_t num) {
         serial_putc(port, '0');
         return;
     }
-    char buf[12]; // Максимум 10 цифр для uint32_t
+    char buf[12];
     int i = 0;
     while (num > 0) {
         buf[i++] = '0' + (num % 10);
@@ -74,7 +73,6 @@ void serial_printf(uint16_t port, const char* format, ...) {
     while (*format) {
         if (*format == '%') {
             format++;
-            
             switch (*format) {
                 case 's': {
                     char* str = va_arg(args, char*);

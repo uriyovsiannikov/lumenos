@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <string.h>
 #include "../../libs/print.h"
+#include "../../drivers/serial/serial.h"
 #include "syslogger.h"
 struct log_entry {
     char message[MAX_LOG_LENGTH];
@@ -18,6 +19,7 @@ void log_message(const char* message, log_level_t level) {
         log_count = MAX_LOG_ENTRIES - 1;
     }
     strncpy(log_entries[log_count].message, message, MAX_LOG_LENGTH - 1);
+    SERIAL_PRINT(message);
     log_entries[log_count].message[MAX_LOG_LENGTH - 1] = '\0';
     log_entries[log_count].level = level;
     log_entries[log_count].timestamp = get_uptime_seconds();

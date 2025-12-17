@@ -13,19 +13,19 @@
 #define SERIAL_MODEM_COMMAND_PORT(base) (base + 4)
 #define SERIAL_LINE_STATUS_PORT(base)   (base + 5)
 // Биты для регистра линии
-#define SERIAL_LINE_ENABLE_DLAB         0x80  // Enable DLAB (для установки скорости)
-#define SERIAL_LINE_8BIT                0x03  // 8 бит данных
-#define SERIAL_LINE_NO_PARITY           0x00  // Без контроля четности
-#define SERIAL_LINE_1_STOP_BIT          0x00  // 1 стоп-бит
+#define SERIAL_LINE_ENABLE_DLAB         0x80
+#define SERIAL_LINE_8BIT                0x03
+#define SERIAL_LINE_NO_PARITY           0x00
+#define SERIAL_LINE_1_STOP_BIT          0x00
 // Биты статуса линии
-#define SERIAL_LINE_STATUS_DATA_READY   0x01  // Данные готовы для чтения
-#define SERIAL_LINE_STATUS_EMPTY        0x20  // Регистр передачи пуст
+#define SERIAL_LINE_STATUS_DATA_READY   0x01
+#define SERIAL_LINE_STATUS_EMPTY        0x20
 // Биты управления модемом
-#define SERIAL_MODEM_DTR_RTS            0x03  // DTR + RTS
-#define SERIAL_MODEM_OUT2               0x08  // OUT2 для прерываний
+#define SERIAL_MODEM_DTR_RTS            0x03
+#define SERIAL_MODEM_OUT2               0x08
 // Биты регистра FIFO
-#define SERIAL_FIFO_ENABLE              0xC7  // Включить FIFO и очистить
-#define SERIAL_FIFO_SIZE_14             0xC0  // 14-байтовый буфер
+#define SERIAL_FIFO_ENABLE              0xC7
+#define SERIAL_FIFO_SIZE_14             0xC0
 void serial_init(uint16_t port);
 void serial_putc(uint16_t port, char c);
 char serial_getc(uint16_t port);
