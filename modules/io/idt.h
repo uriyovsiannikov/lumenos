@@ -2,20 +2,35 @@
 #define IDT_H
 #include <stdint.h>
 struct idt_entry {
-    uint16_t base_lo;
-    uint16_t sel;
-    uint8_t always0;
-    uint8_t flags;
-    uint16_t base_hi;
+  uint16_t base_lo;
+  uint16_t sel;
+  uint8_t always0;
+  uint8_t flags;
+  uint16_t base_hi;
 } __attribute__((packed));
 struct idt_ptr {
-    uint16_t limit;
-    uint32_t base;
+  uint16_t limit;
+  uint32_t base;
 } __attribute__((packed));
 extern void irq0(void);
 extern void irq1(void);
-extern void load_idt(struct idt_ptr* idtp);
+extern void irq2(void);
+extern void irq3(void);
+extern void irq4(void);
+extern void irq5(void);
+extern void irq6(void);
+extern void irq7(void);
+extern void irq8(void);
+extern void irq9(void);
+extern void irq10(void);
+extern void irq11(void);
+extern void irq12(void);
+extern void irq13(void);
+extern void irq14(void);
+extern void irq15(void);
+extern void load_idt(struct idt_ptr *idtp);
 void init_idt(void);
-void setup_idt_gate(struct idt_entry* entry, uint32_t handler);
+void setup_idt_gate(struct idt_entry *entry, uint32_t handler);
 void init_pic(void);
+void register_interrupt_handler(uint8_t interrupt, void (*handler)(void));
 #endif

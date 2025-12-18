@@ -1,16 +1,16 @@
-;==== Multiboot Header ====
+; SPDX-License-Identifier: GPL-3.0-or-later
 section .multiboot
 align 4
 multiboot_header:
     dd 0x1BADB002
     dd 0x00000003
     dd -(0x1BADB002 + 0x00000003)
-;==== Основной код ====
 section .text
 bits 32
 global start
 extern kernel_main
 extern keyboard_handler
+extern init_idt
 start:
     cli
     mov [multiboot_magic], eax
@@ -21,8 +21,6 @@ start:
     call clear_bss
     call enable_a20
     call init_gdt
-    call init_idt
-    call init_pic
     sti
     mov esi, boot_msg
     call early_print
@@ -88,51 +86,6 @@ init_gdt:
     mov gs, ax
     mov ss, ax
     ret
-init_idt:
-    mov edi, idt
-    mov ecx, 256
-    xor eax, eax
-    rep stosd
-    mov eax, keyboard_isr
-    mov word [idt + 0x21 * 8], ax
-    mov word [idt + 0x21 * 8 + 2], 0x08
-    mov word [idt + 0x21 * 8 + 4], 0x8E00
-    shr eax, 16
-    mov word [idt + 0x21 * 8 + 6], ax
-    lidt [idt_descriptor]
-    ret
-init_pic:
-    mov al, 0x11
-    out 0x20, al
-    out 0xA0, al
-    mov al, 0x20
-    out 0x21, al
-    mov al, 0x28
-    out 0xA1, al
-    mov al, 0x04
-    out 0x21, al
-    mov al, 0x02
-    out 0xA1, al
-    mov al, 0x01
-    out 0x21, al
-    out 0xA1, al
-    mov al, 0xFC
-    out 0x21, al
-    mov al, 0xFF
-    out 0xA1, al
-    ret
-keyboard_isr:
-    pusha
-    cld
-    in al, 0x60
-    movzx eax, al
-    push eax
-    call keyboard_handler
-    add esp, 4
-    mov al, 0x20
-    out 0x20, al
-    popa
-    iret
 early_print:
     mov edi, 0xB8000
     mov ah, 0x0F
@@ -144,7 +97,6 @@ early_print:
     jmp .print_loop
 .print_done:
     ret
-;==== Данные ====
 section .data
 align 4
 boot_msg: db "Bootloader: Starting kernel...", 0
@@ -157,10 +109,6 @@ gdt_end:
 gdt_descriptor:
     dw gdt_end - gdt - 1
     dd gdt
-idt_descriptor:
-    dw 256 * 8 - 1
-    dd idt
-;==== BSS секция ====
 section .bss
 align 16
 stack_bottom:
@@ -172,9 +120,6 @@ multiboot_info:
     resd 1
 multiboot_magic:
     resd 1
-align 8
-idt:
-    resb 256 * 8
 global bss_start
 global bss_end
 bss_start:

@@ -1,11 +1,11 @@
 #ifndef CPUFREQ_H
 #define CPUFREQ_H
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 typedef enum {
-    CPU_PSTATE_MIN = 0,
-    CPU_PSTATE_BALANCED,
-    CPU_PSTATE_MAX
+  CPU_PSTATE_MIN = 0,
+  CPU_PSTATE_BALANCED,
+  CPU_PSTATE_MAX
 } cpu_pstate_t;
 bool cpufreq_supported();
 void cpufreq_init();

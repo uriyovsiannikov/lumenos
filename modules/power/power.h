@@ -3,4 +3,4 @@
 #include <stdint.h>
 void reboot(void);
 void shutdown(void);
-#endif 
+#endif

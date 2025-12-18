@@ -1,7 +1,7 @@
 #ifndef CMDHANDLER_H
 #define CMDHANDLER_H
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 #define MAX_COMMAND_LENGTH 256
 #define MAX_HISTORY 10
 #define PROMPT_FORMAT "%s@os $ "
@@ -15,5 +15,5 @@ void process_command(const char *cmd);
 void show_help(void);
 void show_applist(void);
 void show_shortcuts(void);
-void change_username(const char* new_name);
+void change_username(const char *new_name);
 #endif

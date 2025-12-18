@@ -5,18 +5,21 @@
 - Console -- DONE
 - File System -- DONE
 - Memory Managment -- DONE
-- Multitasking -- BROKEN
+- Multitasking -- IN PROGRESS
 - Panic handlers -- IN PROGRESS
 - Power Managment -- DONE
 - System logging -- DONE
 - Timers -- DONE
 - Simple BASIC -- DONE
+- PCI devices detecting -- DONE
+- Ring Buffer -- DONE
 
 *Drivers:*
 - Disk driver -- DONE
 - Serial driver -- DONE
 - Speaker driver -- DONE
 - Vga (graphics) -- DONE
+- Floppy disk -- UNSTABLE
 
 *Included apps:*
 - ASCII table
