@@ -34,17 +34,6 @@
 #define MULTIBOOT_INFO_VBE_INFO 0x00000800
 #define MULTIBOOT_INFO_FRAMEBUFFER_INFO 0x00001000
 #define FILENAME_LEN FS_FILENAME_LEN
-__attribute__((section(".text"))) void _start(void) {}
-__attribute__((used)) static struct {
-  void *start;
-  void *end;
-} multiboot_info_section;
-__attribute__((
-    section(".multiboot"))) static const uint32_t multiboot_header[] = {
-    0x1BADB002,
-    0x00000003,
-    -(0x1BADB002 + 0x00000003),
-};
 uint32_t current_dir_id = 0;
 static uint8_t heap_memory[HEAP_SIZE];
 int recover_mode = 0;
@@ -122,9 +111,9 @@ static void init_state() {
   panic_init();
   paging_init();
   serial_init_default();
-  floppy_init();
   mempools_init();
   event_system_init();
+  floppy_init();
   asm volatile("sti");
 }
 static void create_syscfg() {

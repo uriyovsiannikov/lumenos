@@ -24,7 +24,7 @@ void event_system_init(void) {
     event_queue.pending_immediate = 0;
     subscriptions = NULL;
     system_initialized = 1;
-    print(" [OK]", GREEN);
+    print(" [OK]\n", GREEN);
     log_message("Event system initialized", LOG_INFO);
 }
 void event_system_shutdown(void) {

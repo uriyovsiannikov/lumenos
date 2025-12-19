@@ -35,6 +35,73 @@ uint8_t input_pos = 0;
 char command_history[MAX_HISTORY][MAX_COMMAND_LENGTH] = {0};
 uint8_t history_pos = 0;
 int8_t current_history = -1;
+bool input_waiting_mode = false;
+void set_input_waiting_mode(bool enabled) {
+    input_waiting_mode = enabled;
+}
+void wait_for_input(const char *prompt, char *buffer, uint16_t max_len) {
+    set_input_waiting_mode(true);
+    if (cursor_x != 0) {
+        putchar('\n', text_color);
+    }
+    print(prompt, text_color);
+    print(": ", LIGHT_GREEN);
+    buffer[0] = '\0';
+    uint8_t buffer_pos = 0;
+    bool input_complete = false;
+    while (!input_complete) {
+        uint8_t status = inb(0x64);
+        if (status & 0x01) {
+            uint8_t scancode = inb(0x60);
+            if (scancode & 0x80) {
+                uint8_t keycode = scancode & 0x7F;
+                if (keycode == 0x1D) ctrl_pressed = false;
+                if (keycode == 0x2A || keycode == 0x36) shift_pressed = false;
+                if (keycode == 0x38) alt_pressed = false;
+                continue;
+            }
+            if (scancode == 0x1D) ctrl_pressed = true;
+            if (scancode == 0x2A || scancode == 0x36) shift_pressed = true;
+            if (scancode == 0x38) alt_pressed = true;
+            if (scancode == 0x1C) {
+                putchar('\n', text_color);
+                buffer[buffer_pos] = '\0';
+                input_complete = true;
+                break;
+            }
+            else if (scancode == 0x0E) {
+                if (buffer_pos > 0) {
+                    buffer_pos--;
+                    buffer[buffer_pos] = '\0';
+                    
+                    if (cursor_x > 0) {
+                        cursor_x--;
+                        vga_buffer[cursor_y * VGA_WIDTH + cursor_x] = (text_color << 8) | ' ';
+                        update_cursor();
+                    }
+                }
+            }
+            else {
+                char c = get_char_from_scancode(scancode);
+                if (c != 0 && buffer_pos < max_len - 1) {
+                    putchar(c, text_color);
+                    buffer[buffer_pos++] = c;
+                    buffer[buffer_pos] = '\0';
+                }
+            }
+            if (scancode == 0x2E && ctrl_pressed) {
+                putchar('\n', text_color);
+                print("^C\n", text_color);
+                buffer[0] = '\0';
+                set_input_waiting_mode(false);
+                print_prompt();
+                return;
+            }
+        }
+        asm volatile("pause");
+    }
+    set_input_waiting_mode(false);
+}
 void change_username(const char *new_name) {
   if (strlen(new_name) > 0 && strlen(new_name) < sizeof(username)) {
     strcpy(username, new_name);
@@ -98,6 +165,11 @@ void show_applist() {
   print("\n  memmap    - Show memory map", WHITE);
   print("\n  sysinfo   - Show system info", WHITE);
 }
+void input_test() {
+  char username_buffer[64];
+  wait_for_input("Enter name", username_buffer, 64);
+  print(username_buffer, CYAN);
+}
 void show_shortcuts() {
   print_info("Keyboard Shortcuts:");
   print("\n  Ctrl+A      - Move cursor to beginning of line", WHITE);
@@ -148,6 +220,8 @@ void process_command(const char *cmd) {
     show_help();
   } else if (strcmp(cmd, "applist") == 0) {
     show_applist();
+  } else if (strcmp(cmd, "input") == 0) {
+    input_test(); // =============================================================================
   } else if (strcmp(cmd, "echo") == 0)
     print_info("Usage: echo <text> OR echo $<(all) sysvar name>");
   else if (strncmp(cmd, "echo ", 5) == 0) {
@@ -1005,8 +1079,10 @@ void process_command(const char *cmd) {
   } else if (cmd[0] == '!' && cmd[1] >= '1' && cmd[1] <= '9') {
     execute_from_history(cmd[1] - '0');
   } else if (cmd[0] != '\0') {
-    print_error("Unknown command. Type 'help' for help.");
-    log_message("Unknown command", LOG_ERROR);
+    if (!input_waiting_mode) {
+      print_error("Unknown command. Type 'help' for help.");
+      log_message("Unknown command", LOG_ERROR);
+    }
   }
   print_prompt();
 }

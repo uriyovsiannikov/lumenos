@@ -9,6 +9,7 @@ extern char username[32];
 extern char input_buffer[MAX_COMMAND_LENGTH];
 extern uint8_t input_pos;
 extern char command_history[MAX_HISTORY][MAX_COMMAND_LENGTH];
+void wait_for_input(const char *prompt, char *buffer, uint16_t max_len);
 extern uint8_t history_pos;
 extern int8_t current_history;
 void process_command(const char *cmd);
@@ -16,4 +17,6 @@ void show_help(void);
 void show_applist(void);
 void show_shortcuts(void);
 void change_username(const char *new_name);
+extern bool input_waiting_mode;
+void set_input_waiting_mode(bool enabled);
 #endif
