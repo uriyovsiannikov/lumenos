@@ -24,7 +24,7 @@ ringbuf_t *ringbuf_create(size_t size, bool overwrite) {
     rb->tail = 0;
     rb->count = 0;
     rb->overwrite = overwrite;
-    rb->is_static = false;  // Динамически выделенный буфер
+    rb->is_static = false;
     memset(rb->buffer, 0, size);
     return rb;
 }
@@ -44,7 +44,7 @@ ringbuf_t *ringbuf_create_static(uint8_t *buffer, size_t size, bool overwrite) {
     rb->tail = 0;
     rb->count = 0;
     rb->overwrite = overwrite;
-    rb->is_static = true;  // Статический буфер
+    rb->is_static = true;
     
     return rb;
 }
@@ -71,25 +71,21 @@ bool ringbuf_push(ringbuf_t *rb, uint8_t data) {
         print_error("Ringbuf: NULL pointer in push\n");
         return false;
     }
-    
     if (!rb->buffer) {
         print_error("Ringbuf: Buffer is NULL\n");
         return false;
     }
-    
     if (ringbuf_is_full(rb)) {
         if (!rb->overwrite) {
             print_warning("Ringbuf: Buffer full, overwrite disabled\n");
-            return false;  // Буфер полен и перезапись запрещена
+            return false;
         }
         rb->tail = (rb->tail + 1) % rb->size;
         rb->count--;
     }
-    
     rb->buffer[rb->head] = data;
     rb->head = (rb->head + 1) % rb->size;
     rb->count++;
-    
     return true;
 }
 bool ringbuf_push_bytes(ringbuf_t *rb, const uint8_t *data, size_t len) {
@@ -101,13 +97,11 @@ bool ringbuf_push_bytes(ringbuf_t *rb, const uint8_t *data, size_t len) {
         print_warning("Ringbuf: Cannot push, buffer too small\n");
         return false;
     }
-    
     for (size_t i = 0; i < len; i++) {
         if (!ringbuf_push(rb, data[i])) {
             return false;
         }
     }
-    
     return true;
 }
 bool ringbuf_pop(ringbuf_t *rb, uint8_t *data) {
@@ -115,22 +109,18 @@ bool ringbuf_pop(ringbuf_t *rb, uint8_t *data) {
         print_error("Ringbuf: NULL pointer in pop\n");
         return false;
     }
-    
     if (ringbuf_is_empty(rb)) {
         return false;
     }
-    
     *data = rb->buffer[rb->tail];
     rb->tail = (rb->tail + 1) % rb->size;
     rb->count--;
-    
     return true;
 }
 size_t ringbuf_pop_bytes(ringbuf_t *rb, uint8_t *data, size_t len) {
     if (!rb || !data || len == 0) {
         return 0;
     }
-    
     size_t popped = 0;
     while (popped < len && !ringbuf_is_empty(rb)) {
         if (!ringbuf_pop(rb, &data[popped])) {
@@ -138,7 +128,6 @@ size_t ringbuf_pop_bytes(ringbuf_t *rb, uint8_t *data, size_t len) {
         }
         popped++;
     }
-    
     return popped;
 }
 bool ringbuf_is_empty(const ringbuf_t *rb) {
@@ -163,27 +152,22 @@ bool ringbuf_peek(const ringbuf_t *rb, uint8_t *data, size_t offset) {
     if (!rb || !data || offset >= rb->count) {
         return false;
     }
-    
     size_t index = (rb->tail + offset) % rb->size;
     *data = rb->buffer[index];
-    
     return true;
 }
 size_t ringbuf_peek_bytes(const ringbuf_t *rb, uint8_t *data, size_t offset, size_t len) {
     if (!rb || !data || offset >= rb->count) {
         return 0;
     }
-    
     size_t to_copy = len;
     if (offset + to_copy > rb->count) {
         to_copy = rb->count - offset;
     }
-    
     for (size_t i = 0; i < to_copy; i++) {
         size_t index = (rb->tail + offset + i) % rb->size;
         data[i] = rb->buffer[index];
     }
-    
     return to_copy;
 }
 int ringbuf_find(const ringbuf_t *rb, uint8_t value) {
@@ -192,17 +176,15 @@ int ringbuf_find(const ringbuf_t *rb, uint8_t value) {
     for (size_t i = 0; i < rb->count; i++) {
         size_t index = (rb->tail + i) % rb->size;
         if (rb->buffer[index] == value) {
-            return i;  // Возвращаем смещение от начала
+            return i;
         }
     }
-    
-    return -1;  // Не найдено
+    return -1;
 }
 int ringbuf_find_bytes(const ringbuf_t *rb, const uint8_t *pattern, size_t pattern_len) {
     if (!rb || !pattern || pattern_len == 0 || pattern_len > rb->count) {
         return -1;
     }
-    
     for (size_t i = 0; i <= rb->count - pattern_len; i++) {
         bool found = true;
         for (size_t j = 0; j < pattern_len; j++) {
@@ -232,7 +214,7 @@ size_t ringbuf_pop_string(ringbuf_t *rb, char *buffer, size_t buffer_size) {
     }
     int null_pos = ringbuf_find(rb, '\0');
     if (null_pos == -1) {
-        return 0;  // Нет завершенной строки
+        return 0;
     }
     size_t bytes_to_read = null_pos + 1;
     if (bytes_to_read > buffer_size) {

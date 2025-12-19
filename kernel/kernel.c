@@ -123,6 +123,7 @@ static void init_state() {
   paging_init();
   serial_init_default();
   floppy_init();
+  mempools_init();
   asm volatile("sti");
 }
 static void create_syscfg() {
