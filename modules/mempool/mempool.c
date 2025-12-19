@@ -105,15 +105,16 @@ void mempool_stats(mempool_t *pool) {
     print("%\n", WHITE);
 }
 void mempools_init(void) {
+    print("Initializing memory pool...", WHITE);
     pool_16 = mempool_create(16, 256);   // 256 блоков по 16 байт = 4KB
     pool_32 = mempool_create(32, 256);   // 256 блоков по 32 байта = 8KB
     pool_64 = mempool_create(64, 128);   // 128 блоков по 64 байта = 8KB
     pool_128 = mempool_create(128, 64);  // 64 блока по 128 байт = 8KB
     
     if (!pool_16 || !pool_32 || !pool_64 || !pool_128) {
-        print("Failed to initialize memory pools!\n", RED);
+        print(" [ERROR]\n", RED);
     } else {
-        print("Memory pools initialized successfully\n", GREEN);
+        print(" [OK]\n", GREEN);
     }
 }
 void *malloc_16(void) {

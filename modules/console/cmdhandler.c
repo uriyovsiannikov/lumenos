@@ -484,6 +484,10 @@ void process_command(const char *cmd) {
       paging_print_info();
     else if (strcmp(cmd + 5, "pgtest 3") == 0)
       paging_demo();
+    else if (strcmp(cmd + 5, "evntest") == 0)
+      event_test();
+    else if (strcmp(cmd + 5, "memptest") == 0)
+      mempool_test();
     else {
       print("Invalid test name. Available tests:\n", CYAN);
       print("* Gfxtest - graphics test\n", WHITE);
@@ -491,6 +495,8 @@ void process_command(const char *cmd) {
       print("* Sndtest - Sound test\n", WHITE);
       print("* Mttest  - multitasking test\n", WHITE);
       print("* Pgtest  - paging test [1,2,3]\n", WHITE);
+      print("* Evntest  - event test\n", WHITE);
+      print("* Memptest  - mempool test\n", WHITE);
     }
   } else if (strcmp(cmd, "beep") == 0) {
     speaker_beep_nonblocking(1000, 200);

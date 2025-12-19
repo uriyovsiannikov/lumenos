@@ -16,7 +16,8 @@ LIBS_C_SOURCES = $(wildcard libs/*.c)
 INCLUDES_C_SOURCES = $(wildcard include/*.c)
 MODULES_DIRS = modules/io modules/mm modules/mt modules/panic \
                modules/power modules/syslogger modules/timer modules/console modules/clipboard \
-               modules/basic modules/fs modules/floppy modules/pci modules/ringbuff modules/mempool
+               modules/basic modules/fs modules/floppy modules/pci modules/ringbuff modules/mempool \
+			   modules/event
 MODULES_C_SOURCES = $(foreach dir,$(MODULES_DIRS),$(wildcard $(dir)/*.c))
 ALL_C_SOURCES = $(APPS_C_SOURCES) $(DRIVERS_C_SOURCES) $(KERNEL_C_SOURCES) \
                 $(LIBS_C_SOURCES) $(MODULES_C_SOURCES) $(INCLUDES_C_SOURCES)

@@ -20,6 +20,7 @@ void log_message(const char *message, log_level_t level) {
   }
   strncpy(log_entries[log_count].message, message, MAX_LOG_LENGTH - 1);
   SERIAL_PRINT(message);
+  SERIAL_PRINT("\n");
   log_entries[log_count].message[MAX_LOG_LENGTH - 1] = '\0';
   log_entries[log_count].level = level;
   log_entries[log_count].timestamp = get_uptime_seconds();

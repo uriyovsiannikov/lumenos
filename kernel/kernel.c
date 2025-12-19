@@ -124,6 +124,7 @@ static void init_state() {
   serial_init_default();
   floppy_init();
   mempools_init();
+  event_system_init();
   asm volatile("sti");
 }
 static void create_syscfg() {

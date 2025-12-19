@@ -13,6 +13,8 @@
 - Simple BASIC -- DONE
 - PCI devices detecting -- DONE
 - Ring Buffer -- DONE
+- Memory Pool -- DONE
+- Event System -- DONE
 
 *Drivers:*
 - Disk driver -- DONE
