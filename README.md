@@ -5,7 +5,7 @@
 - Console -- DONE
 - File System -- DONE
 - Memory Managment -- DONE
-- Multitasking -- IN PROGRESS
+- Multitasking -- SOON
 - Panic handlers -- IN PROGRESS
 - Power Managment -- DONE
 - System logging -- DONE
@@ -21,7 +21,9 @@
 - Serial driver -- DONE
 - Speaker driver -- DONE
 - Vga (graphics) -- DONE
+- A20 mode -- DONE
 - Floppy disk -- UNSTABLE
+- LPT driver -- DONE
 
 *Included apps:*
 - ASCII table

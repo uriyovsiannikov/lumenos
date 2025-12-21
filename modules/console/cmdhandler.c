@@ -19,7 +19,6 @@
 #include "../../modules/io/keyboard.h"
 #include "../../modules/mm/mm.h"
 #include "../../modules/mm/paging.h"
-#include "../../modules/mt/multitasking.h"
 #include "../../modules/panic/panic.h"
 #include "../../modules/power/cpufreq.h"
 #include "../../modules/power/power.h"
@@ -126,7 +125,6 @@ void show_help() {
   print("\n  shutdown  - Shutdown system", WHITE);
   print("\n  settime   - Change timezone", WHITE);
   print("\n  uptime    - Show system uptime", WHITE);
-  print("\n  ps        - Show processes", WHITE);
   print("\n  mkfile    - Create new file", WHITE);
   print("\n  wrtfile   - Write data to file", WHITE);
   print("\n  rdfile    - Read data from file", WHITE);
@@ -221,7 +219,9 @@ void process_command(const char *cmd) {
   } else if (strcmp(cmd, "applist") == 0) {
     show_applist();
   } else if (strcmp(cmd, "input") == 0) {
-    input_test(); // =============================================================================
+    input_test();
+  } else if (strcmp(cmd, "asmhello") == 0) {
+    asm_demo_hello_world();
   } else if (strcmp(cmd, "echo") == 0)
     print_info("Usage: echo <text> OR echo $<(all) sysvar name>");
   else if (strncmp(cmd, "echo ", 5) == 0) {
@@ -550,8 +550,6 @@ void process_command(const char *cmd) {
       test_memory_manager();
     else if (strcmp(cmd + 5, "sndtest") == 0)
       speaker_test();
-    else if (strcmp(cmd + 5, "mttest") == 0)
-      test_multitasking();
     else if (strcmp(cmd + 5, "pgtest 1") == 0)
       paging_run_tests();
     else if (strcmp(cmd + 5, "pgtest 2") == 0)
@@ -567,7 +565,6 @@ void process_command(const char *cmd) {
       print("* Gfxtest - graphics test\n", WHITE);
       print("* Mmtest  - memory manager test\n", WHITE);
       print("* Sndtest - Sound test\n", WHITE);
-      print("* Mttest  - multitasking test\n", WHITE);
       print("* Pgtest  - paging test [1,2,3]\n", WHITE);
       print("* Evntest  - event test\n", WHITE);
       print("* Memptest  - mempool test\n", WHITE);
@@ -577,6 +574,21 @@ void process_command(const char *cmd) {
     print_success("Beep!\n");
   } else if (strcmp(cmd, "reboot") == 0) {
     reboot();
+  } else if (strcmp(cmd, "lpt") == 0) {
+    print_info("LPT Parallel Port Driver");
+    print("\nUsage: lpt <command>", WHITE);
+    print("\nCommands:", WHITE);
+    print("\n  detect             - Detect parallel ports", WHITE);
+    print("\n  status [1-3]       - Show port status", WHITE);
+    print("\n  test [1-3]         - Test port", WHITE);
+    print("\n  init [1-3]         - Initialize printer", WHITE);
+    print("\n  write <port> <text> - Send text", WHITE);
+    print("\n  hex <port> <value>  - Send hex byte", WHITE);
+    print("\n  raw <port> <byte>   - Send decimal byte", WHITE);
+    print("\n  irq <port> <on/off> - Control interrupts", WHITE);
+    print("\n  help               - Show help", WHITE);
+  } else if (strncmp(cmd, "lpt ", 4) == 0) {
+    lpt_command(cmd+4);
   } else if (strcmp(cmd, "shutdown") == 0) {
     shutdown();
   } else if (strcmp(cmd, "sysinfo") == 0) {
@@ -1041,6 +1053,8 @@ void process_command(const char *cmd) {
     syslogger_command(cmd + 8);
   } else if (strncmp(cmd, "shcts", 5) == 0) {
     show_shortcuts();
+  } else if (strncmp(cmd, "lpt detect", 10) == 0) {
+    lpt_detect_ports();
   } else if (strcmp(cmd, "syslogs") == 0) {
     show_logs();
   } else if (strcmp(cmd, "dskinfo") == 0) {

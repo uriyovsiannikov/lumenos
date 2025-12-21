@@ -10,14 +10,15 @@ LDFLAGS = -m elf_i386 -T linker.ld -nostdlib
 APPS_C_SOURCES = $(wildcard apps/*.c)
 DRIVERS_C_SOURCES = $(wildcard drivers/*.c) $(wildcard drivers/vga/*.c) \
                     $(wildcard drivers/serial/*.c) $(wildcard drivers/speaker/*.c) \
-                    $(wildcard drivers/ddrv/*.c) $(wildcard drivers/floppy/*.c)
+                    $(wildcard drivers/ddrv/*.c) $(wildcard drivers/floppy/*.c) \
+					$(wildcard drivers/lpt/*.c) $(wildcard drivers/a20/*.c)
 KERNEL_C_SOURCES = $(wildcard kernel/*.c)
 LIBS_C_SOURCES = $(wildcard libs/*.c)
 INCLUDES_C_SOURCES = $(wildcard include/*.c)
 MODULES_DIRS = modules/io modules/mm modules/mt modules/panic \
                modules/power modules/syslogger modules/timer modules/console modules/clipboard \
                modules/basic modules/fs modules/floppy modules/pci modules/ringbuff modules/mempool \
-			   modules/event
+			   modules/event modules/asm
 MODULES_C_SOURCES = $(foreach dir,$(MODULES_DIRS),$(wildcard $(dir)/*.c))
 ALL_C_SOURCES = $(APPS_C_SOURCES) $(DRIVERS_C_SOURCES) $(KERNEL_C_SOURCES) \
                 $(LIBS_C_SOURCES) $(MODULES_C_SOURCES) $(INCLUDES_C_SOURCES)
@@ -71,6 +72,7 @@ clean:
 run: $(ISO_IMAGE)
 	qemu-system-i386 -cdrom $(ISO_IMAGE) -serial stdio -vga std \
 	-audiodev sdl,id=audio0 -machine pcspk-audiodev=audio0 \
-	-drive file=disk.img,format=raw,if=ide,index=0,media=disk -fda floppy.img
+	-drive file=disk.img,format=raw,if=ide,index=0,media=disk -fda floppy.img \
+	-parallel file:lpt_output.txt
 debug: $(ISO_IMAGE)
 	$(QEMU) -cdrom $(ISO_IMAGE) -serial stdio -vga std -s -S

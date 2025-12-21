@@ -2,7 +2,6 @@
 #include "../libs/print.h"
 #include "../libs/string.h"
 #include "../modules/io/io.h"
-#include "../modules/mt/multitasking.h"
 #include "../modules/syslogger/syslogger.h"
 #include "../modules/timer/timer.h"
 int timezone_offset = 0;

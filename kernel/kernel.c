@@ -10,7 +10,6 @@
 #include "../modules/io/keyboard.h"
 #include "../modules/mm/mm.h"
 #include "../modules/mm/paging.h"
-#include "../modules/mt/multitasking.h"
 #include "../modules/syslogger/syslogger.h"
 #include "../modules/timer/timer.h"
 #include "../modules/pci/pci.h"
@@ -102,17 +101,18 @@ static void booticon() {
   print("`---'`---'` ' '`---'`   '`---'`---'\n", GREEN);
 }
 static void init_state() {
+  a20_init();
   mm_init(heap_memory, HEAP_SIZE);
   init_idt();
   fs_init();
   disk_init();
   timer_init(100);
-  mt_init();
   panic_init();
   paging_init();
   serial_init_default();
   mempools_init();
   event_system_init();
+  lpt_init();
   floppy_init();
   asm volatile("sti");
 }

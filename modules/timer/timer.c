@@ -2,7 +2,6 @@
 #include "../io/io.h"
 #include "../libs/print.h"
 #include "../libs/string.h"
-#include "../mt/multitasking.h"
 #include "../syslogger/syslogger.h"
 #define PIT_CHANNEL0 0x40
 #define PIT_CMD 0x43
@@ -13,7 +12,6 @@ volatile uint32_t ticks = 0;
 static volatile uint32_t seconds = 0;
 void timer_interrupt_handler(void) {
   ticks++;
-  mt_tick();
   if (ticks >= TIMER_HZ) {
     seconds++;
     ticks = 0;
