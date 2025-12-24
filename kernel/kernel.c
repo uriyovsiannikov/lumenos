@@ -13,6 +13,7 @@
 #include "../modules/syslogger/syslogger.h"
 #include "../modules/timer/timer.h"
 #include "../modules/pci/pci.h"
+#include "../drivers/vga/vga.h"
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stddef.h>
