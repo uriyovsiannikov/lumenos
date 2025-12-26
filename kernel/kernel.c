@@ -13,11 +13,16 @@
 #include "../modules/syslogger/syslogger.h"
 #include "../modules/timer/timer.h"
 #include "../modules/pci/pci.h"
-#include "../drivers/vga/vga.h"
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+__attribute__((section(".multiboot"))) __attribute__((used))
+static const uint32_t multiboot_header[] = {
+    0x1BADB002,           // magic
+    0x0,                  // flags (мы не устанавливаем флаги)
+    -(0x1BADB002 + 0x0)   // checksum (magic + flags + checksum = 0)
+};
 #define HEAP_SIZE (1024 * 1024)
 #define MULTIBOOT_BOOTLOADER_MAGIC 0x2BADB002
 #define MULTIBOOT_INFO_MEMORY 0x00000001

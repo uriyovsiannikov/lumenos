@@ -4,11 +4,9 @@
 #include "../../apps/spsheet.h"
 #include "../../apps/sysinfo.h"
 #include "../../apps/tedit.h"
-#include "../../drivers/vga/vga.h"
 #include "../../include/stdio.h"
 #include "../../libs/ctype.h"
 #include "../../libs/print.h"
-#include "../../libs/sgl.h"
 #include "../../libs/string.h"
 #include "../../modules/basic/exec.h"
 #include "../../modules/console/aliases.h"
@@ -544,9 +542,7 @@ void process_command(const char *cmd) {
   } else if (strcmp(cmd, "test") == 0)
     print_info("Usage: test <test name>!");
   else if (strncmp(cmd, "test ", 5) == 0) {
-    if (strcmp(cmd + 5, "gfxtest") == 0)
-      sgl_test();
-    else if (strcmp(cmd + 5, "mmtest") == 0)
+    if (strcmp(cmd + 5, "mmtest") == 0)
       test_memory_manager();
     else if (strcmp(cmd + 5, "sndtest") == 0)
       speaker_test();
