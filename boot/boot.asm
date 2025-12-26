@@ -17,11 +17,10 @@ start:
     mov [multiboot_info], ebx
     cmp eax, 0x2BADB002
     jne .invalid_multiboot
+    
     mov esp, stack_top
     call clear_bss
-    call enable_a20
     call init_gdt
-    sti
     mov esi, boot_msg
     call early_print
     push dword [multiboot_info]
@@ -42,38 +41,6 @@ clear_bss:
     sub ecx, edi
     xor eax, eax
     rep stosb
-    ret
-enable_a20:
-    call .wait_input
-    mov al, 0xAD
-    out 0x64, al
-    call .wait_input
-    mov al, 0xD0
-    out 0x64, al
-    call .wait_output
-    in al, 0x60
-    push eax
-    call .wait_input
-    mov al, 0xD1
-    out 0x64, al
-    call .wait_input
-    pop eax
-    or al, 2
-    out 0x60, al
-    call .wait_input
-    mov al, 0xAE
-    out 0x64, al
-    call .wait_input
-    ret
-.wait_input:
-    in al, 0x64
-    test al, 2
-    jnz .wait_input
-    ret
-.wait_output:
-    in al, 0x64
-    test al, 1
-    jz .wait_output
     ret
 init_gdt:
     lgdt [gdt_descriptor]
@@ -124,4 +91,3 @@ global bss_start
 global bss_end
 bss_start:
 bss_end:
-section .note.GNU-stack noalloc noexec nowrite progbits

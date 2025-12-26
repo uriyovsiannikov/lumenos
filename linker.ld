@@ -1,36 +1,40 @@
-/* linker.ld */
 ENTRY(start)
-SECTIONS
-{
-    . = 0x100000; /* 1MB */
-    .text : ALIGN(4K)
-    {
-        _kernel_start = .;
-        *(.multiboot)
+
+SECTIONS {
+    . = 1M;                     /* Загрузка по адресу 1MB */
+    
+    .multiboot : ALIGN(4) {     /* Multiboot заголовок в начале! */
+        KEEP(*(.multiboot))
+    }
+    
+    .text : ALIGN(4K) {
         *(.text)
         *(.text.*)
     }
-    .rodata : ALIGN(4K)
-    {
+    
+    .rodata : ALIGN(4K) {
         *(.rodata)
         *(.rodata.*)
     }
-    .data : ALIGN(4K)
-    {
+    
+    .data : ALIGN(4K) {
         *(.data)
         *(.data.*)
     }
-    .bss : ALIGN(4K)
-    {
+    
+    .bss : ALIGN(4K) {
+        bss_start = .;
         *(COMMON)
         *(.bss)
         *(.bss.*)
+        bss_end = .;
     }
+    
     /DISCARD/ : {
         *(.comment)
-        *(.note*)
+        *(.note.*)
         *(.eh_frame*)
     }
-    _bss_end = .;
-    _kernel_end = .;
+    
+    kernel_end = .;
 }

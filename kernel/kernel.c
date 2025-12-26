@@ -17,11 +17,12 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-__attribute__((section(".multiboot"))) __attribute__((used))
-static const uint32_t multiboot_header[] = {
-    0x1BADB002,           // magic
-    0x0,                  // flags (мы не устанавливаем флаги)
-    -(0x1BADB002 + 0x0)   // checksum (magic + flags + checksum = 0)
+__attribute__((section(".multiboot"), used))
+static const uint32_t multiboot_header[4] = {
+    0x1BADB002,
+    (1 << 0) | (1 << 1),
+    -(0x1BADB002 + ((1 << 0) | (1 << 1))),
+    0, 0, 0, 0
 };
 #define HEAP_SIZE (1024 * 1024)
 #define MULTIBOOT_BOOTLOADER_MAGIC 0x2BADB002

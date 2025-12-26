@@ -218,8 +218,6 @@ void process_command(const char *cmd) {
     show_applist();
   } else if (strcmp(cmd, "input") == 0) {
     input_test();
-  } else if (strcmp(cmd, "asmhello") == 0) {
-    asm_demo_hello_world();
   } else if (strcmp(cmd, "echo") == 0)
     print_info("Usage: echo <text> OR echo $<(all) sysvar name>");
   else if (strncmp(cmd, "echo ", 5) == 0) {
