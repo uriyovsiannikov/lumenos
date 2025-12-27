@@ -1,5 +1,7 @@
 **32 Bit OS written in C & Assembly**
 
+*LumenOS use Limine Bootloader*
+
 *Features:*
 - Basic I/O system -- DONE
 - Console -- DONE
