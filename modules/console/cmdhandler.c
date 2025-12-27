@@ -807,6 +807,14 @@ void process_command(const char *cmd) {
     show_ascii_table();
   } else if (strcmp(cmd, "history") == 0) {
     show_history();
+  } else if (strcmp(cmd, "pci") == 0) {
+    print_info("PCI devices commands:\n");
+    print("  * pci scan   -- scan devices\n", WHITE);
+    print("  * pci print  -- print devices", WHITE);
+  } else if (strcmp(cmd, "pci scan") == 0) {
+    pci_scan_all();
+  } else if (strcmp(cmd, "pci print") == 0) {
+    pci_print_devices();
   } else if (strcmp(cmd, "chusr") == 0)
     print_info("Usage: chusr <new username>!");
   else if (strncmp(cmd, "chusr ", 6) == 0) {

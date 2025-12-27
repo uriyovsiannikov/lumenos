@@ -2,107 +2,64 @@
 #include "../modules/syslogger/syslogger.h"
 #include "../libs/print.h"
 #include "../libs/string.h"
-#include "../modules/io/io.h"  // Добавьте этот include!
+#include "../modules/io/io.h"
 #include <stddef.h>
-
-// Список обнаруженных устройств
 static pci_device_t *pci_devices = NULL;
-
-// Вспомогательная функция для добавления устройства в список
 static void pci_add_device(pci_device_t *dev) {
     dev->next = pci_devices;
     pci_devices = dev;
 }
-
-// Функция чтения конфигурационного регистра PCI
 uint32_t pci_read_config(uint8_t bus, uint8_t device, uint8_t function, uint8_t offset) {
-    // Формируем адрес
     uint32_t address = PCI_MAKE_ADDRESS(bus, device, function, offset);
-    
-    // Записываем адрес в порт
     outl(PCI_CONFIG_ADDRESS, address);
-    
-    // Читаем данные
     uint32_t result = inl(PCI_CONFIG_DATA);
-    
-    // Сдвигаем результат, если нужно (для чтения слов/байтов)
     return result >> (8 * (offset & 3));
 }
-
-// Функция записи в конфигурационный регистр PCI
 void pci_write_config(uint8_t bus, uint8_t device, uint8_t function, uint8_t offset, uint32_t value) {
-    // Формируем адрес
     uint32_t address = PCI_MAKE_ADDRESS(bus, device, function, offset);
-    
-    // Записываем адрес в порт
     outl(PCI_CONFIG_ADDRESS, address);
-    
-    // Записываем значение
     outl(PCI_CONFIG_DATA, value);
 }
-
-// Проверка существования устройства
 static bool pci_device_exists(uint8_t bus, uint8_t device, uint8_t function) {
     uint32_t vendor_device = pci_read_config(bus, device, function, PCI_REGISTER_VENDOR_ID);
     return (vendor_device != 0xFFFFFFFF && (vendor_device & 0xFFFF) != 0xFFFF);
 }
-
-// Проверка multifunction устройства
 static bool pci_is_multifunction(uint8_t bus, uint8_t device, uint8_t function) {
     uint8_t header_type = pci_read_config(bus, device, function, PCI_REGISTER_HEADER_TYPE);
-    return (header_type & 0x80) != 0; // Бит 7 указывает на multifunction
+    return (header_type & 0x80) != 0;
 }
-
-// Сканирование одного устройства
 static void pci_scan_device(uint8_t bus, uint8_t device) {
-    // Проверяем function 0
     if (!pci_device_exists(bus, device, 0)) {
         return;
     }
-    
     uint8_t function = 0;
     uint8_t max_functions = 1;
-    
-    // Если device multifunction, сканируем все 8 функций
     if (pci_is_multifunction(bus, device, 0)) {
         max_functions = 8;
     }
-    
     for (function = 0; function < max_functions; function++) {
         if (!pci_device_exists(bus, device, function)) {
             continue;
         }
-        
-        // Читаем основные регистры
         uint32_t vendor_device = pci_read_config(bus, device, function, PCI_REGISTER_VENDOR_ID);
         uint16_t vendor_id = vendor_device & 0xFFFF;
         uint16_t device_id = vendor_device >> 16;
-        
-        // Если vendor_id некорректный, пропускаем
         if (vendor_id == 0xFFFF) {
             continue;
         }
-        
-        // Читаем класс и подкласс
         uint32_t class_reg = pci_read_config(bus, device, function, PCI_REGISTER_CLASS_CODE);
         uint8_t class_code = (class_reg >> 24) & 0xFF;
         uint8_t subclass = (class_reg >> 16) & 0xFF;
         uint8_t prog_if = (class_reg >> 8) & 0xFF;
         uint8_t revision_id = class_reg & 0xFF;
-        
-        // Создаем структуру устройства с помощью вашего malloc
         pci_device_t *dev = (pci_device_t*)malloc(sizeof(pci_device_t));
         if (!dev) {
             log_message("Failed to allocate memory for PCI device", LOG_ERROR);
             continue;
         }
-        
-        // Инициализируем структуру нулями
         for (int i = 0; i < sizeof(pci_device_t); i++) {
             ((uint8_t*)dev)[i] = 0;
         }
-        
-        // Заполняем структуру
         dev->vendor_id = vendor_id;
         dev->device_id = device_id;
         dev->class_code = class_code;
@@ -112,50 +69,32 @@ static void pci_scan_device(uint8_t bus, uint8_t device) {
         dev->bus = bus;
         dev->device = device;
         dev->function = function;
-        
-        // Читаем BAR (Base Address Registers)
         for (int i = 0; i < 6; i++) {
             dev->bar[i] = pci_read_config(bus, device, function, PCI_REGISTER_BAR0 + i * 4);
         }
-        
-        // Читаем информацию о прерываниях
         dev->interrupt_line = pci_read_config(bus, device, function, PCI_REGISTER_INTERRUPT_LINE) & 0xFF;
         dev->interrupt_pin = pci_read_config(bus, device, function, PCI_REGISTER_INTERRUPT_PIN) & 0xFF;
-        
         dev->next = NULL;
-        
-        // Добавляем в список
         pci_add_device(dev);
-        
-        // Логируем найденное устройство
         char log_msg[128];
         snprintf(log_msg, sizeof(log_msg), 
                  "PCI: %02x:%02x.%01x %04x:%04x class %02x/%02x", 
                  bus, device, function, vendor_id, device_id, class_code, subclass);
         log_message(log_msg, LOG_INFO);
-        
-        // Рекурсивное сканирование PCI-PCI мостов
         if (class_code == PCI_CLASS_BRIDGE && subclass == 0x04) { // PCI-to-PCI bridge
             uint8_t secondary_bus = pci_read_config(bus, device, function, 0x19) & 0xFF;
             pci_scan_bus(secondary_bus);
         }
     }
 }
-
-// Сканирование всей шины
 void pci_scan_bus(uint8_t bus) {
     for (uint8_t device = 0; device < 32; device++) {
         pci_scan_device(bus, device);
     }
 }
-
-// Сканирование всех шин
 void pci_scan_all(void) {
     log_message("Starting PCI bus scan...", LOG_INFO);
-    
-    // Проверяем, является ли устройство 0:0 multifunction
     if (pci_is_multifunction(0, 0, 0)) {
-        // Host-to-PCI bridge поддерживает несколько шин
         for (uint8_t function = 0; function < 8; function++) {
             if (pci_device_exists(0, 0, function)) {
                 uint8_t header_type = pci_read_config(0, 0, function, PCI_REGISTER_HEADER_TYPE) & 0x7F;
@@ -166,19 +105,13 @@ void pci_scan_all(void) {
             }
         }
     } else {
-        // Одиночная шина
         pci_scan_bus(0);
     }
-    
     log_message("PCI bus scan completed", LOG_INFO);
 }
-
-// Получение списка устройств
 pci_device_t* pci_get_device_list(void) {
     return pci_devices;
 }
-
-// Поиск устройства по vendor/device ID
 pci_device_t* pci_find_device(uint16_t vendor_id, uint16_t device_id) {
     pci_device_t *dev = pci_devices;
     while (dev) {
@@ -189,8 +122,6 @@ pci_device_t* pci_find_device(uint16_t vendor_id, uint16_t device_id) {
     }
     return NULL;
 }
-
-// Поиск устройства по классу и подклассу
 pci_device_t* pci_find_class(uint8_t class_code, uint8_t subclass) {
     pci_device_t *dev = pci_devices;
     while (dev) {
@@ -201,8 +132,6 @@ pci_device_t* pci_find_class(uint8_t class_code, uint8_t subclass) {
     }
     return NULL;
 }
-
-// Получение имени класса устройства
 const char* pci_get_class_name(uint8_t class_code) {
     switch (class_code) {
         case PCI_CLASS_UNCLASSIFIED:      return "Unclassified";
@@ -227,8 +156,6 @@ const char* pci_get_class_name(uint8_t class_code) {
         default:                          return "Unknown";
     }
 }
-
-// Получение имени подкласса
 const char* pci_get_subclass_name(uint8_t class_code, uint8_t subclass) {
     switch (class_code) {
         case PCI_CLASS_MASS_STORAGE:
@@ -241,7 +168,6 @@ const char* pci_get_subclass_name(uint8_t class_code, uint8_t subclass) {
                 case PCI_SUBCLASS_STORAGE_OTHER:  return "Other";
                 default: return "Unknown";
             }
-            
         case PCI_CLASS_NETWORK:
             switch (subclass) {
                 case PCI_SUBCLASS_NETWORK_ETHERNET:   return "Ethernet";
@@ -251,7 +177,6 @@ const char* pci_get_subclass_name(uint8_t class_code, uint8_t subclass) {
                 case PCI_SUBCLASS_NETWORK_OTHER:      return "Other";
                 default: return "Unknown";
             }
-            
         case PCI_CLASS_DISPLAY:
             switch (subclass) {
                 case 0x00: return "VGA";
@@ -259,13 +184,10 @@ const char* pci_get_subclass_name(uint8_t class_code, uint8_t subclass) {
                 case 0x02: return "3D";
                 default: return "Unknown";
             }
-            
         default:
             return "";
     }
 }
-
-// Получение имени вендора
 const char* pci_get_vendor_name(uint16_t vendor_id) {
     switch (vendor_id) {
         case 0x8086: return "Intel";
@@ -287,19 +209,14 @@ const char* pci_get_vendor_name(uint16_t vendor_id) {
         default: return "Unknown";
     }
 }
-
-// Печать списка устройств в консоль
 void pci_print_devices(void) {
     pci_device_t *dev = pci_devices;
     int count = 0;
-    
-    print("\n=== PCI Devices ===\n", LIGHT_CYAN);
-    
+    print("=== PCI Devices ===\n", LIGHT_CYAN);
     if (!dev) {
         print("No PCI devices found\n", YELLOW);
         return;
     }
-    
     print("Bus Dev Fnc Vendor Device  Class              Subclass  IRQ\n", WHITE);
     print("--- --- --- ------ ------  -----------------  --------  ---\n", WHITE);
     
@@ -323,10 +240,7 @@ void pci_print_devices(void) {
             snprintf(buf, sizeof(buf), "  (%s)", vendor_name);
             print(buf, LIGHT_RED);
         }
-        
         print("\n", WHITE);
-        
-        // Показать BAR, если есть
         if (dev->bar[0] != 0) {
             char bar_buf[64];
             snprintf(bar_buf, sizeof(bar_buf), "  BAR0: 0x%08x", dev->bar[0]);
@@ -337,17 +251,13 @@ void pci_print_devices(void) {
         dev = dev->next;
         count++;
     }
-    
     char final_buf[64];
     snprintf(final_buf, sizeof(final_buf), "\nTotal PCI devices: %d\n", count);
     print(final_buf, LIGHT_CYAN);
 }
-
-// Инициализация PCI подсистемы
 void pci_init(void) {
     log_message("Initializing PCI subsystem...", LOG_INFO);
     pci_scan_all();
-    
     char msg[64];
     pci_device_t *dev = pci_devices;
     int count = 0;
@@ -355,7 +265,6 @@ void pci_init(void) {
         count++;
         dev = dev->next;
     }
-    
     snprintf(msg, sizeof(msg), "PCI init complete, found %d devices", count);
     log_message(msg, LOG_INFO);
 }
