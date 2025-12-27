@@ -176,7 +176,3 @@ void serial_flush(uint16_t port) {
     inb(port);
   }
 }
-void serial_init_default() {
-  serial_init(COM1);
-  SERIAL_PRINT("\nSerial port COM1 initialized\n");
-}

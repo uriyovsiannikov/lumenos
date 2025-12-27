@@ -2,6 +2,7 @@
 #include "../libs/print.h"
 #include "../modules/io/keyboard.h"
 #include "../modules/syslogger/syslogger.h"
+#include "../modules/io/io.h"
 #include <stddef.h>
 #include <string.h>
 struct environment_var {
@@ -223,3 +224,70 @@ void print_prompt() {
   update_cursor();
 }
 void change_color(uint8_t new_color) { text_color = new_color; }
+bool input_waiting_mode = false;
+void set_input_waiting_mode(bool enabled) {
+    input_waiting_mode = enabled;
+}
+void wait_for_input(const char *prompt, char *buffer, uint16_t max_len) {
+    set_input_waiting_mode(true);
+    if (cursor_x != 0) {
+        putchar('\n', text_color);
+    }
+    print(prompt, text_color);
+    print(": ", LIGHT_GREEN);
+    buffer[0] = '\0';
+    uint8_t buffer_pos = 0;
+    bool input_complete = false;
+    while (!input_complete) {
+        uint8_t status = inb(0x64);
+        if (status & 0x01) {
+            uint8_t scancode = inb(0x60);
+            if (scancode & 0x80) {
+                uint8_t keycode = scancode & 0x7F;
+                if (keycode == 0x1D) ctrl_pressed = false;
+                if (keycode == 0x2A || keycode == 0x36) shift_pressed = false;
+                if (keycode == 0x38) alt_pressed = false;
+                continue;
+            }
+            if (scancode == 0x1D) ctrl_pressed = true;
+            if (scancode == 0x2A || scancode == 0x36) shift_pressed = true;
+            if (scancode == 0x38) alt_pressed = true;
+            if (scancode == 0x1C) {
+                putchar('\n', text_color);
+                buffer[buffer_pos] = '\0';
+                input_complete = true;
+                break;
+            }
+            else if (scancode == 0x0E) {
+                if (buffer_pos > 0) {
+                    buffer_pos--;
+                    buffer[buffer_pos] = '\0';
+                    
+                    if (cursor_x > 0) {
+                        cursor_x--;
+                        vga_buffer[cursor_y * VGA_WIDTH + cursor_x] = (text_color << 8) | ' ';
+                        update_cursor();
+                    }
+                }
+            }
+            else {
+                char c = get_char_from_scancode(scancode);
+                if (c != 0 && buffer_pos < max_len - 1) {
+                    putchar(c, text_color);
+                    buffer[buffer_pos++] = c;
+                    buffer[buffer_pos] = '\0';
+                }
+            }
+            if (scancode == 0x2E && ctrl_pressed) {
+                putchar('\n', text_color);
+                print("^C\n", text_color);
+                buffer[0] = '\0';
+                set_input_waiting_mode(false);
+                print_prompt();
+                return;
+            }
+        }
+        asm volatile("pause");
+    }
+    set_input_waiting_mode(false);
+}

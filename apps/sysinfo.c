@@ -158,7 +158,7 @@ void show_system_info() {
   safe_itoa(seconds_remaining, buffer, 10);
   print(buffer, WHITE);
   print("s\n", WHITE);
-  print("  Kernel: LumenOS v0.1\n", WHITE);
+  print("  Kernel: LumenOS v1.2\n", WHITE);
   print("  Architecture: i386 (32-bit)\n", WHITE);
   print("\n", WHITE);
   print_info("Hardware Features:\n");
@@ -177,6 +177,5 @@ void show_system_info() {
   } else {
     print("  APIC: Not present\n", WHITE);
   }
-  print_info("=== End of System Information ===\n");
   log_message("System information displayed", LOG_INFO);
 }

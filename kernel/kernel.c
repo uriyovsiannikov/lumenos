@@ -96,9 +96,9 @@ void check_boot_args(const char *args) {
   print(" [OK]\n", GREEN);
   if (args && strstr(args, "secured")) {
     recover_mode = 1;
-    log_message("smode: secured", LOG_INFO);
+    log_message("Boot mode: recovery", LOG_INFO);
   } else {
-    log_message("smode: default", LOG_INFO);
+    log_message("Boot mode: default", LOG_INFO);
   }
 }
 static void booticon() {
@@ -116,7 +116,7 @@ static void init_state() {
   timer_init(100);
   panic_init();
   paging_init();
-  serial_init_default();
+  serial_init(COM1);
   mempools_init();
   event_system_init();
   lpt_init();
@@ -125,13 +125,13 @@ static void init_state() {
 }
 static void create_syscfg() {
   current_dir_id = fs_get_current_dir();
-  set_environment_var("ver", "0.4", true);
+  set_environment_var("ver", "1.2", true);
   log_message("Internal environment created", LOG_INFO);
   fs_create("HOME", 1, current_dir_id, true);
   fs_create("SYS", 1, current_dir_id, true);
   fs_create("DATA", 1, current_dir_id, true);
   fs_create("TEMP", 1, current_dir_id, true);
-  fs_create("SYSADJ.SYS", 0, current_dir_id, true);
+  fs_create("USRDATA.SYS", 0, current_dir_id, true);
 }
 void kernel_main(uint32_t magic, uint32_t *mb_info) {
   if (magic == MULTIBOOT_BOOTLOADER_MAGIC) {
@@ -152,9 +152,9 @@ void kernel_main(uint32_t magic, uint32_t *mb_info) {
   print_info("\n");
   booticon();
   if (recover_mode) {
-    print("LumenOS v0.4 (Recover mode)\n", LIGHT_CYAN);
+    print("LumenOS v1.2 (Recover mode)\n", LIGHT_CYAN);
   } else {
-    print("LumenOS v0.4\n", LIGHT_CYAN);
+    print("LumenOS v1.2\n", LIGHT_CYAN);
   }
   print("Type 'help' for commands\n\n", WHITE);
   print_prompt();

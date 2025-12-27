@@ -21,7 +21,7 @@ C_OBJS = $(C_FILES:.c=.o)
 ASM_OBJS = $(ASM_FILES:.asm=.o)
 OBJS = $(C_OBJS) $(ASM_OBJS)
 
-.PHONY: all clean run test install-limine create-cfg
+.PHONY: all clean run
 
 all: $(ISO)
 
@@ -59,17 +59,6 @@ $(ISO): $(KERNEL)
 	
 	@rm -rf iso_root
 
-install-limine:
-	@mkdir -p $(LIMINE_DIR)
-	@wget -q https://github.com/limine-bootloader/limine/releases/latest/download/limine-bin.zip -O /tmp/limine.zip
-	@unzip -qjo /tmp/limine.zip "limine-bios.sys" "limine-bios-cd.bin" "limine" -d $(LIMINE_DIR)/ 2>/dev/null || true
-	@rm -f /tmp/limine.zip
-
-create-cfg:
-	@echo ":LumenOS" > limine.conf
-	@echo "PROTOCOL=multiboot1" >> limine.conf
-	@echo "KERNEL_PATH=boot:///kernel.bin" >> limine.conf
-
 %.o: %.c
 	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) -c $< -o $@
@@ -79,10 +68,10 @@ create-cfg:
 	@$(ASM) $(ASMFLAGS) $< -o $@
 
 run: $(ISO)
-	$(QEMU) -cdrom $(ISO) -serial stdio -vga std -m 256M
-
-test: $(KERNEL)
-	$(QEMU) -kernel $(KERNEL) -serial stdio -vga std -m 256M
+	qemu-system-i386 -cdrom $(ISO) -serial stdio -vga std \
+	-audiodev sdl,id=audio0 -machine pcspk-audiodev=audio0 \
+	-drive file=disk.img,format=raw,if=ide,index=0,media=disk \
+	-m 64M
 
 clean:
 	@rm -f $(OBJS) $(KERNEL) $(ISO)
