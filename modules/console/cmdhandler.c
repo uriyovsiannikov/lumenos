@@ -61,8 +61,8 @@ void show_help() {
   print("\n  rdfile    - Read data from file", WHITE);
   print("\n  rnfile    - Rename file", WHITE);
   print("\n  fndfile   - Find file", WHITE);
-  print("\n  delcont   - Delete file or directory", WHITE);
-  print("\n  fslst     - Show files list (-s)", WHITE);
+  print("\n  rm        - Delete file or directory", WHITE);
+  print("\n  ls        - Show files list (-s)", WHITE);
   print("\n  chmod     - Change file perms", WHITE);
   print("\n  cd        - Change directory", WHITE);
   print("\n  dskinfo  - Show disk information", WHITE);
@@ -630,10 +630,10 @@ void process_command(const char *cmd) {
     print_info("Usage: rdfile <file>!");
   else if (strncmp(cmd, "rdfile ", 7) == 0) {
     fs_cat_file(cmd + 7, current_dir_id);
-  } else if (strcmp(cmd, "delcont") == 0)
-    print_info("Usage: delcont <file / dir>!");
-  else if (strncmp(cmd, "delcont ", 8) == 0) {
-    const char *filename = cmd + 8;
+  } else if (strcmp(cmd, "rm") == 0)
+    print_info("Usage: rm <file / dir>!");
+  else if (strncmp(cmd, "rm ", 3) == 0) {
+    const char *filename = cmd + 3;
     if (strlen(filename) == 0) {
       print("Error: Please specify filename\n", RED);
       log_message("File name parsing error", LOG_ERROR);
@@ -717,7 +717,7 @@ void process_command(const char *cmd) {
   } else if (strcmp(cmd, "floppy_dir") == 0) {
     char *args[] = {"floppy_dir"};
     cmd_floppy_dir(1, args);
-  } else if (strcmp(cmd, "fslst") == 0 || strncmp(cmd, "fslst ", 6) == 0) {
+  } else if (strcmp(cmd, "ls") == 0 || strncmp(cmd, "ls ", 3) == 0) {
     fs_list(current_dir_id);
   } else if (strcmp(cmd, "mkdir") == 0)
     print_info("Usage: mkdir <directory>!");

@@ -278,14 +278,6 @@ void wait_for_input(const char *prompt, char *buffer, uint16_t max_len) {
                     buffer[buffer_pos] = '\0';
                 }
             }
-            if (scancode == 0x2E && ctrl_pressed) {
-                putchar('\n', text_color);
-                print("^C\n", text_color);
-                buffer[0] = '\0';
-                set_input_waiting_mode(false);
-                print_prompt();
-                return;
-            }
         }
         asm volatile("pause");
     }
