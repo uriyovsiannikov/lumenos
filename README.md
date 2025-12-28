@@ -1,3 +1,6 @@
+LumenOS
+===============================================================================
+
 **32 Bit OS written in C & Assembly**
 
 *LumenOS using Limine Bootloader*
