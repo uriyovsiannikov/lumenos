@@ -2,7 +2,7 @@
 
 *LumenOS using Limine Bootloader*
 
-![Screenshot](https://github.com/uovsannikov/lumenos/raw/main/images/1.png)
+![Screenshot](images/1.png)
 
 *Features:*
 - Basic I/O system -- DONE
