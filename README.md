@@ -1,6 +1,8 @@
 **32 Bit OS written in C & Assembly**
 
-*LumenOS use Limine Bootloader*
+*LumenOS using Limine Bootloader*
+
+![Screenshot](https://github.com/uovsannikov/lumenos/raw/main/images/1.png)
 
 *Features:*
 - Basic I/O system -- DONE
