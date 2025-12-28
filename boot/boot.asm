@@ -17,7 +17,6 @@ start:
     mov [multiboot_info], ebx
     cmp eax, 0x2BADB002
     jne .invalid_multiboot
-    
     mov esp, stack_top
     call clear_bss
     call init_gdt

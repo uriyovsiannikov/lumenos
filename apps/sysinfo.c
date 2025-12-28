@@ -1,8 +1,8 @@
 #include "../libs/print.h"
 #include "../libs/string.h"
-#include "../modules/mm/mm.h"
-#include "../modules/syslogger/syslogger.h"
-#include "../modules/timer/timer.h"
+#include "../sys/mm/mm.h"
+#include "../sys/syslogger/syslogger.h"
+#include "../sys/timer/timer.h"
 #include <stdint.h>
 extern volatile uint32_t timer_ticks;
 extern uint32_t *mmap_addr;

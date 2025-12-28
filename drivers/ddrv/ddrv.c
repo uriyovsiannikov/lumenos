@@ -2,8 +2,8 @@
 #include "../libs/ctype.h"
 #include "../libs/print.h"
 #include "../libs/string.h"
-#include "../modules/io/io.h"
-#include "../modules/syslogger/syslogger.h"
+#include "../sys/io/io.h"
+#include "../sys/syslogger/syslogger.h"
 static disk_drive_t drives[4];
 static uint8_t disk_count = 0;
 static uint8_t current_drive = 0;

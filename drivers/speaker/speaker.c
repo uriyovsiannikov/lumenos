@@ -1,6 +1,6 @@
 #include "speaker.h"
-#include "../modules/io/io.h"
-#include "../modules/timer/timer.h"
+#include "../sys/io/io.h"
+#include "../sys/timer/timer.h"
 #define SPEAKER_PORT 0x61
 #define PIT_PORT 0x42
 #define PIT_CMD_PORT 0x43

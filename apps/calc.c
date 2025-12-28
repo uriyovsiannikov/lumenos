@@ -1,7 +1,7 @@
 #include "../include/stdio.h"
 #include "../libs/print.h"
 #include "../libs/string.h"
-#include "../modules/syslogger/syslogger.h"
+#include "../sys/syslogger/syslogger.h"
 #include <stdint.h>
 void calc(const char *expr) {
   int a, b;

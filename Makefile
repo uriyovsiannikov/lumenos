@@ -5,7 +5,7 @@ QEMU = qemu-system-i386
 
 CFLAGS = -ffreestanding -fno-stack-protector -fno-pic -m32 \
          -Wall -Wextra -nostdlib -g -std=gnu99 -O0 \
-         -Iinclude -Ilibs -Ikernel -Imodules -Iapps -Idrivers \
+         -Iinclude -Ilibs -Ikernel -Isys -Iapps -Idrivers \
 		 -w
 
 ASMFLAGS = -f elf32 -g
@@ -16,7 +16,7 @@ ISO = lumenos.iso
 LIMINE_DIR = limine
 
 C_FILES = $(shell find . -name "*.c" -not -path "./$(LIMINE_DIR)/*")
-ASM_FILES = boot/boot.asm $(shell find modules -name "*.asm" 2>/dev/null)
+ASM_FILES = boot/boot.asm $(shell find sys -name "*.asm" 2>/dev/null)
 C_OBJS = $(C_FILES:.c=.o)
 ASM_OBJS = $(ASM_FILES:.asm=.o)
 OBJS = $(C_OBJS) $(ASM_OBJS)
@@ -34,29 +34,29 @@ $(ISO): $(KERNEL)
 	@cp $(KERNEL) iso_root/
 	@cp $(LIMINE_DIR)/limine-bios.sys iso_root/boot/limine/
 	@cp $(LIMINE_DIR)/limine-bios-cd.bin iso_root/
-	
+
 	@if [ -f "$(LIMINE_DIR)/BOOTX64.EFI" ]; then \
 		cp $(LIMINE_DIR)/BOOTX64.EFI iso_root/EFI/BOOT/; \
 		cp $(LIMINE_DIR)/limine-uefi-cd.bin iso_root/; \
 	fi
-	
+
 	@if [ -f "limine.conf" ]; then \
 		cp limine.conf iso_root/; \
 	else \
 		@echo "ERROR: limine.conf not found"; exit 1; \
 	fi
-	
+
 	@xorriso -as mkisofs \
 		-b limine-bios-cd.bin \
 		-no-emul-boot -boot-load-size 4 -boot-info-table \
 		--protective-msdos-label \
 		iso_root -o $(ISO) 2>/dev/null
-	
+
 	@if [ -f "$(LIMINE_DIR)/limine" ]; then \
 		chmod +x "$(LIMINE_DIR)/limine"; \
 		"$(LIMINE_DIR)/limine" bios-install $(ISO) 2>&1 | grep -v "already" || true; \
 	fi
-	
+
 	@rm -rf iso_root
 
 %.o: %.c

@@ -1,7 +1,7 @@
 #include "floppy.h"
 #include "../libs/print.h"
-#include "../modules/io/idt.h"
-#include "../modules/io/io.h"
+#include "../sys/io/idt.h"
+#include "../sys/io/io.h"
 #include <stddef.h>
 volatile int floppy_irq_occurred = 0;
 floppy_drive_t floppy_drives[4] = {0};

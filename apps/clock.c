@@ -1,9 +1,9 @@
 #include "../libs/print.h"
 #include "../libs/string.h"
-#include "../modules/io/io.h"
-#include "../modules/syslogger/syslogger.h"
-#include "../modules/timer/time.h"
-#include "../modules/timer/timer.h"
+#include "../sys/io/io.h"
+#include "../sys/syslogger/syslogger.h"
+#include "../sys/timer/time.h"
+#include "../sys/timer/timer.h"
 void show_clock() {
   uint8_t hour, minute, second;
   get_rtc_time(&hour, &minute, &second);

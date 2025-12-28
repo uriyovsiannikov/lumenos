@@ -1,7 +1,7 @@
 #include "memmap.h"
 #include "../libs/print.h"
 #include "../libs/string.h"
-#include "../modules/syslogger/syslogger.h"
+#include "../sys/syslogger/syslogger.h"
 uint32_t *mmap_addr = 0;
 uint32_t mmap_length = 0;
 uint32_t mmap_entries_count = 0;

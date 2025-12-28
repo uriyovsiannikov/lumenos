@@ -2,8 +2,8 @@
 #include "a20.h"
 #include "../../libs/print.h"
 #include "../../libs/string.h"
-#include "../../modules/syslogger/syslogger.h"
-#include "../../modules/io/io.h"
+#include "../../sys/syslogger/syslogger.h"
+#include "../../sys/io/io.h"
 #include <stddef.h>
 #define KBC_CMD_PORT  0x64
 #define KBC_DATA_PORT 0x60
@@ -81,7 +81,7 @@ static bool enable_a20_kbc(void) {
     io_wait();
     if (!wait_kbc_ready()) return false;
     outb(KBC_CMD_PORT, KBC_READ_CMD);
-    io_wait(); 
+    io_wait();
     if (!wait_kbc_data()) return false;
     uint8_t status = inb(KBC_DATA_PORT);
     io_wait();
@@ -127,7 +127,7 @@ static bool enable_a20_bios(void) {
         : "cc"
     );
     success = (result == 0);
-    
+
     if (success) {
         log_message("A20: BIOS method succeeded", LOG_INFO);
         return true;
@@ -185,7 +185,7 @@ bool a20_enable(void) {
     if (enable_a20_bios() && test_a20_thorough()) {
         return true;
     }
-    
+
     return false;
 }
 bool a20_disable(void) {
@@ -243,7 +243,7 @@ bool a20_test_kbc_method(void) {
     }
     bool result = enable_a20_kbc();
     bool now_enabled = a20_is_enabled();
-    
+
     if (!was_enabled) {
         a20_disable();
     }
@@ -257,7 +257,7 @@ bool a20_test_fast_method(void) {
     }
     bool result = enable_a20_fast();
     bool now_enabled = a20_is_enabled();
-    
+
     if (!was_enabled) {
         a20_disable();
     }
@@ -271,7 +271,7 @@ bool a20_test_bios_method(void) {
     }
     bool result = enable_a20_bios();
     bool now_enabled = a20_is_enabled();
-    
+
     if (!was_enabled) {
         a20_disable();
     }

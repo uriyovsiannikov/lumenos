@@ -1,5 +1,5 @@
 #include "print.h"
-#include "../modules/io/io.h"
+#include "../sys/io/io.h"
 #include "string.h"
 volatile uint16_t *vga_buffer = (volatile uint16_t *)0xB8000;
 uint8_t cursor_x = 0, cursor_y = 0;
