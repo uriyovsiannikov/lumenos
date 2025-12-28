@@ -1,4 +1,3 @@
-#include "../drivers/floppy/floppy.h"
 #include "../drivers/serial/serial.h"
 #include "../libs/print.h"
 #include "../libs/string.h"
@@ -31,6 +30,7 @@ static const uint32_t multiboot_header[4] = {
 #define MULTIBOOT_INFO_FRAMEBUFFER_INFO 0x00001000
 #define FILENAME_LEN FS_FILENAME_LEN
 uint32_t current_dir_id = 0;
+int a = 0;
 static uint8_t heap_memory[HEAP_SIZE];
 int recover_mode = 0;
 void kernel_main(uint32_t magic, uint32_t *mb_info);
@@ -123,6 +123,9 @@ static void create_syscfg() {
   fs_create("TEMP", 1, current_dir_id, true);
   fs_create("USRDATA.SYS", 0, current_dir_id, true);
 }
+static void userspace() {
+    print("userspace init",RED);
+}
 void kernel_main(uint32_t magic, uint32_t *mb_info) {
   if (magic == MULTIBOOT_BOOTLOADER_MAGIC) {
     multiboot_info_t *mbi = (multiboot_info_t *)mb_info;
@@ -148,6 +151,7 @@ void kernel_main(uint32_t magic, uint32_t *mb_info) {
   }
   print("Type 'help' for commands\n\n", WHITE);
   print_prompt();
+  userspace();
   log_message("System init end", LOG_INFO);
   while (1) {
     asm volatile("hlt");
