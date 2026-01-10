@@ -47,6 +47,7 @@ int event_pending(void);
 event_t *event_create(event_type_t type, void *sender, void *data, uint32_t data_size);
 void event_destroy(event_t *event);
 const char *event_type_to_string(event_type_t type);
+void event_test(void);
 #define EVENT_POST(type, sender, data) event_post((type), (sender), (data), 0)
 #define EVENT_POST_SIZE(type, sender, data, size) event_post((type), (sender), (data), (size))
 #define EVENT_SUBSCRIBE(type, handler) event_subscribe((type), (handler), NULL)

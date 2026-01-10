@@ -1,26 +1,39 @@
 #include "cmdhandler.h"
-#include "../../apps/calc.h"
-#include "../../apps/clock.h"
-#include "../../apps/spsheet.h"
-#include "../../apps/sysinfo.h"
-#include "../../apps/tedit.h"
-#include "../../libs/print.h"
-#include "../../libs/string.h"
-#include "../../sys/basic/exec.h"
-#include "../../sys/console/aliases.h"
-#include "../../sys/console/consoleutils.h"
-#include "../../sys/floppy/floppy_cmd.h"
-#include "../../sys/fs/fs.h"
-#include "../../sys/io/io.h"
-#include "../../sys/mm/mm.h"
-#include "../../sys/mm/paging.h"
-#include "../../sys/power/cpufreq.h"
-#include "../../sys/power/power.h"
-#include "../../sys/syslogger/syslogger.h"
+#include "consoleutils.h"
+#include "../libs/print.h"
+#include "../libs/ctype.h"
+#include "../libs/string.h"
+#include "../include/stdio.h"
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+// ================ APPS ENTRIES =====================
+#include "../apps/calc.h"
+#include "../apps/clock.h"
+#include "../apps/spsheet.h"
+#include "../apps/sysinfo.h"
+#include "../apps/tedit.h"
+#include "../apps/asciitb.h"
+#include "../apps/memmap.h"
+// ================= SYS ENTRIES =====================
+#include "../sys/basic/exec.h"
+#include "../sys/console/aliases.h"
+#include "../sys/floppy/floppy_cmd.h"
+#include "../sys/clipboard/clipboard.h"
+#include "../sys/fs/fs.h"
+#include "../sys/io/io.h"
+#include "../sys/mm/mm.h"
+#include "../sys/mm/paging.h"
+#include "../sys/event/event.h"
+#include "../sys/mempool/mempool.h"
+#include "../sys/power/cpufreq.h"
+#include "../sys/power/power.h"
+#include "../sys/syslogger/syslogger.h"
+#include "../sys/pci/pci.h"
+// =============== DRIVERS ENTRIES =====================
+#include "../drivers/lpt/lpt.h"
+#include "../drivers/speaker/speaker.h"
 char username[32] = "user";
 char input_buffer[MAX_COMMAND_LENGTH] = {0};
 uint8_t input_pos = 0;

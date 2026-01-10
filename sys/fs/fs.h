@@ -44,6 +44,8 @@ int fs_resolve_path(const char *path, uint32_t *parent_dir_id);
 bool fs_is_dir(int index);
 const char *fs_get_entry_name(int index);
 int fs_find_directory(const char *path, uint32_t current_dir);
+bool fs_format(void);
+int fs_info(const char *name, uint32_t parent_dir);
 extern fs_file_entry_t fs_files[FS_MAX_FILES];
 extern uint32_t fs_current_dir;
 extern uint16_t fs_fat[1024];

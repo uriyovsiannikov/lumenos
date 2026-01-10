@@ -8,4 +8,8 @@ struct alias {
   char name[MAX_ALIAS_LENGTH];
   char value[MAX_ALIAS_VALUE_LENGTH];
 };
+void add_alias(const char *name, const char *value);
+void remove_alias(const char *name);
+void list_aliases();
+const char *resolve_alias(const char *name);
 #endif

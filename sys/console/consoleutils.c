@@ -1,4 +1,5 @@
 #include "consoleutils.h"
+#include "cmdhandler.h"
 #include "../libs/print.h"
 #include "../sys/io/keyboard.h"
 #include "../sys/syslogger/syslogger.h"

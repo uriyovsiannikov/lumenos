@@ -35,4 +35,5 @@ uint8_t lpt_read_status(uint16_t port);
 void lpt_initialize_printer(uint16_t port);
 bool lpt_test_port(uint16_t port);
 void lpt_set_irq_enabled(uint16_t port, bool enabled);
+void lpt_command(const char* args);
 #endif // LPT_H

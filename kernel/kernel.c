@@ -1,11 +1,28 @@
-#include "../drivers/serial/serial.h"
 #include "../libs/print.h"
 #include "../libs/string.h"
-#include "../sys/syslogger/syslogger.h"
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+// ===================== FOR INIT =========================
+#include "../drivers/serial/serial.h"
+#include "../drivers/a20/a20.h"
+#include "../drivers/ddrv/ddrv.h"
+#include "../drivers/floppy/floppy.h"
+#include "../drivers/lpt/lpt.h"
+#include "../drivers/serial/serial.h"
+#include "../sys/syslogger/syslogger.h"
+#include "../sys/panic/panic.h"
+#include "../sys/fs/fs.h"
+#include "../sys/mm/mm.h"
+#include "../sys/mm/paging.h"
+#include "../sys/event/event.h"
+#include "../sys/timer/timer.h"
+#include "../sys/io/idt.h"
+#include "../sys/mempool/mempool.h"
+#include "../apps/memmap.h"
+#include "../sys/console/consoleutils.h"
+// ======================= END ============================
 __attribute__((section(".multiboot"), used))
 static const uint32_t multiboot_header[4] = {
     0x1BADB002,

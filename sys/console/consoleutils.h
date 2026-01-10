@@ -24,4 +24,5 @@ void show_history();
 void execute_from_history(uint8_t index);
 void print_prompt();
 void change_color(uint8_t new_color);
+void wait_for_input(const char *prompt, char *buffer, uint16_t max_len);
 #endif

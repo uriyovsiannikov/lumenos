@@ -1,9 +1,12 @@
 #include "exec.h"
+#include "../include/stdio.h"
 #include "../../libs/print.h"
 #include "../../libs/string.h"
 #include "../mm/mm.h"
 #include "../sys/fs/fs.h"
 #include "../sys/io/keyboard.h"
+#include "../sys/console/consoleutils.h"
+#include "../drivers/speaker/speaker.h"
 #include "../sys/syslogger/syslogger.h"
 #include <ctype.h>
 #include <stddef.h>
