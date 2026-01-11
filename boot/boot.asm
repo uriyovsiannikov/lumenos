@@ -14,7 +14,7 @@ extern init_idt
 start:
     cli
     mov [multiboot_magic], eax
-    mov [multiboot_info], ebx
+    mov [multiboot_info], ebx ; хз че тут происходит
     cmp eax, 0x2BADB002
     jne .invalid_multiboot
     mov esp, stack_top

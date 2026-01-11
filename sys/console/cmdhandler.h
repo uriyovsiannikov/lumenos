@@ -4,7 +4,7 @@
 #include <stdint.h>
 #define MAX_COMMAND_LENGTH 256
 #define MAX_HISTORY 10
-#define PROMPT_FORMAT "%s@os $ "
+#define PROMPT_FORMAT "%s@os # "
 extern char username[32];
 extern char input_buffer[MAX_COMMAND_LENGTH];
 extern uint8_t input_pos;

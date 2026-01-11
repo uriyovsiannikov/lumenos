@@ -16,18 +16,18 @@ irq%1:
 %endmacro
 IRQ 0,  32  ; Таймер
 IRQ 1,  33  ; Клавиатура
-IRQ 2,  34  ; Каскадный (для PIC)
+IRQ 2,  34
 IRQ 3,  35  ; COM2
 IRQ 4,  36  ; COM1
 IRQ 5,  37  ; LPT2
-IRQ 6,  38  ; Флоппи-дисковод
+IRQ 6,  38  ; Флоппи
 IRQ 7,  39  ; LPT1
 IRQ 8,  40  ; RTC
-IRQ 9,  41  ; Свободно
-IRQ 10, 42  ; Свободно
-IRQ 11, 43  ; Свободно
+IRQ 9,  41
+IRQ 10, 42
+IRQ 11, 43
 IRQ 12, 44  ; PS/2 мышь
-IRQ 13, 45  ; Сопроцессор
+IRQ 13, 45  ; пенис
 IRQ 14, 46  ; IDE0
 IRQ 15, 47  ; IDE1
 irq_common:

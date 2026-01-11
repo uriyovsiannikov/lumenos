@@ -162,7 +162,7 @@ void restore_from_history() {
   cursor_y = original_y;
   vga_buffer[cursor_y * VGA_WIDTH + cursor_x] = (text_color << 8) | ' ';
   print(username, LIGHT_BLUE);
-  print("@os $ ", LIGHT_GREEN);
+  print("@os # ", LIGHT_GREEN);
   if (current_history >= 0 && current_history < history_pos) {
     print(command_history[current_history], WHITE);
     strcpy(input_buffer, command_history[current_history]);
@@ -218,7 +218,7 @@ void print_prompt() {
   char current_char = current_cell & 0xFF;
   if (current_char != 'u' && current_char != '>') {
     print(username, LIGHT_BLUE);
-    print("@os $ ", LIGHT_GREEN);
+    print("@os # ", LIGHT_GREEN);
   }
   input_pos = 0;
   input_buffer[0] = '\0';
