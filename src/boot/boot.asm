@@ -1,0 +1,92 @@
+; SPDX-License-Identifier: GPL-3.0-or-later
+section .multiboot
+align 4
+multiboot_header:
+    dd 0x1BADB002
+    dd 0x00000003
+    dd -(0x1BADB002 + 0x00000003)
+section .text
+bits 32
+global start
+extern kernel_main
+extern keyboard_handler
+extern init_idt
+start:
+    cli
+    mov [multiboot_magic], eax
+    mov [multiboot_info], ebx ; хз че тут происходит
+    cmp eax, 0x2BADB002
+    jne .invalid_multiboot
+    mov esp, stack_top
+    call clear_bss
+    call init_gdt
+    mov esi, boot_msg
+    call early_print
+    push dword [multiboot_info]
+    push dword [multiboot_magic]
+    call kernel_main
+    add esp, 8
+.hang:
+    cli
+    hlt
+    jmp .hang
+.invalid_multiboot:
+    mov esi, multiboot_error_msg
+    call early_print
+    jmp .hang
+clear_bss:
+    mov edi, bss_start
+    mov ecx, bss_end
+    sub ecx, edi
+    xor eax, eax
+    rep stosb
+    ret
+init_gdt:
+    lgdt [gdt_descriptor]
+    jmp 0x08:.reload_cs
+.reload_cs:
+    mov ax, 0x10
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+    mov ss, ax
+    ret
+early_print:
+    mov edi, 0xB8000
+    mov ah, 0x0F
+.print_loop:
+    lodsb
+    test al, al
+    jz .print_done
+    stosw
+    jmp .print_loop
+.print_done:
+    ret
+section .data
+align 4
+boot_msg: db "Bootloader: Starting kernel...", 0
+multiboot_error_msg: db "ERROR: Invalid Multiboot signature", 0
+gdt:
+    dq 0x0000000000000000
+    dq 0x00CF9A000000FFFF
+    dq 0x00CF92000000FFFF
+gdt_end:
+gdt_descriptor:
+    dw gdt_end - gdt - 1
+    dd gdt
+section .bss
+align 16
+stack_bottom:
+    resb 16384
+stack_top:
+global multiboot_info
+global multiboot_magic
+multiboot_info:
+    resd 1
+multiboot_magic:
+    resd 1
+global bss_start
+global bss_end
+bss_start:
+bss_end:

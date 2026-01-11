@@ -3,9 +3,14 @@ ASM = nasm
 LD = ld
 QEMU = /mnt/c/Program\ Files/qemu/qemu-system-i386.exe
 
+# Пути к основным директориям
+SRC_DIR = src
+BUILD_DIR = build
+
 CFLAGS = -ffreestanding -fno-stack-protector -fno-pic -m32 \
          -Wall -Wextra -nostdlib -g -std=gnu99 -O0 \
-         -Iinclude -Ilibs -Ikernel -Isys -Iapps -Idrivers \
+         -I$(SRC_DIR)/include -I$(SRC_DIR)/libs -I$(SRC_DIR)/kernel \
+         -I$(SRC_DIR)/sys -I$(SRC_DIR)/apps -I$(SRC_DIR)/drivers \
          -w -fno-stack-check
 
 ASMFLAGS = -f elf32 -g
@@ -15,13 +20,16 @@ KERNEL = kernel.bin
 ISO = lumenos.iso
 LIMINE_DIR = limine
 
-C_FILES = $(shell find . -name "*.c" -not -path "./$(LIMINE_DIR)/*")
-ASM_FILES = boot/boot.asm $(shell find sys -name "*.asm" 2>/dev/null)
-C_OBJS = $(C_FILES:.c=.o)
-ASM_OBJS = $(ASM_FILES:.asm=.o)
+# Поиск файлов в src и её поддиректориях
+C_FILES = $(shell find $(SRC_DIR) -name "*.c" -not -path "./$(LIMINE_DIR)/*")
+ASM_FILES = $(SRC_DIR)/boot/boot.asm $(shell find $(SRC_DIR)/sys -name "*.asm" 2>/dev/null)
+
+# Преобразование путей к объектным файлам в build директории
+C_OBJS = $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(C_FILES))
+ASM_OBJS = $(patsubst $(SRC_DIR)/%.asm, $(BUILD_DIR)/%.o, $(ASM_FILES))
 OBJS = $(C_OBJS) $(ASM_OBJS)
 
-.PHONY: all clean run
+.PHONY: all clean run kernel iso
 
 all: $(ISO)
 
@@ -43,7 +51,7 @@ $(ISO): $(KERNEL)
 	@if [ -f "limine.conf" ]; then \
 		cp limine.conf iso_root/; \
 	else \
-		@echo "ERROR: limine.conf not found"; exit 1; \
+		echo "ERROR: limine.conf not found"; exit 1; \
 	fi
 
 	@xorriso -as mkisofs \
@@ -59,11 +67,13 @@ $(ISO): $(KERNEL)
 
 	@rm -rf iso_root
 
-%.o: %.c
+# Правило для компиляции C файлов
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-%.o: %.asm
+# Правило для ассемблерных файлов
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.asm
 	@mkdir -p $(dir $@)
 	@$(ASM) $(ASMFLAGS) $< -o $@
 
@@ -74,8 +84,9 @@ run: $(ISO)
 	-m 64M
 
 clean:
-	@rm -f $(OBJS) $(KERNEL) $(ISO)
-	@find . -name "*.o" -delete 2>/dev/null || true
+	@find . -type f \( -name "*.o" -o -name "*.d" \) -delete
+	@rm -rf $(BUILD_DIR) $(KERNEL) $(ISO) iso_root
+	@echo "Cleaned build directory"
 
 kernel: $(KERNEL)
 iso: $(ISO)
