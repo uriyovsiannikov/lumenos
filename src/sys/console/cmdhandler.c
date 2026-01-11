@@ -17,6 +17,7 @@
 #include "../apps/asciitb.h"
 #include "../apps/memmap.h"
 #include "../apps/cowsay.h"
+#include "../apps/lfetch.h"
 // ================= SYS ENTRIES =====================
 #include "../sys/basic/exec.h"
 #include "../sys/console/aliases.h"
@@ -103,6 +104,7 @@ void show_applist() {
   print("\n  memmap    - Show memory map", WHITE);
   print("\n  sysinfo   - Show system info", WHITE);
   print("\n  cowsay    - Simple ASCII art cow", WHITE);
+  print("\n  lfetch    - Simple system fetch", WHITE);
 }
 void input_test() {
   char username_buffer[64];
@@ -1014,6 +1016,8 @@ void process_command(const char *cmd) {
     print_info("Usage: cowsay <message>"); 
   } else if (strncmp(cmd, "cowsay ", 7) == 0) {
     cowsay_command(cmd + 7);
+  } else if (strcmp(cmd, "lfetch") == 0) {
+    lfetch_command();
   } else if (strcmp(cmd, "run") == 0)
     print_info("Usage: run <filename>!");
   else if (strncmp(cmd, "run ", 4) == 0) {

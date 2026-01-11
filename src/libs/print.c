@@ -61,9 +61,30 @@ void putchar(char c, uint8_t color) {
     update_cursor();
   }
 }
+void putchar_reg(char c, uint8_t color) {
+  if (c < ' ') {
+    return;
+  }
+  vga_buffer[cursor_y * VGA_WIDTH + cursor_x] = (color << 8) | c;
+  cursor_x++;
+  if (cursor_x >= VGA_WIDTH) {
+    cursor_x = 0;
+    cursor_y++;
+  }
+  if (cursor_y >= VGA_HEIGHT) {
+    scroll_screen();
+  } else {
+    update_cursor();
+  }
+}
 void print(const char *str, uint8_t color) {
   while (*str) {
     putchar(*str++, color);
+  }
+}
+void print_reg(const char *str, uint8_t color) {
+  while (*str) {
+    putchar_reg(*str++, color);
   }
 }
 void print_hex(uint32_t num, uint8_t color) {
