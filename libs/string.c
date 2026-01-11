@@ -111,7 +111,6 @@ void *memmove(void *dest, const void *src, size_t n) {
   }
   return dest;
 }
-int isdigit(int c) { return (c >= '0' && c <= '9'); }
 long strtol(const char *str, char **endptr, int base) {
   long result = 0;
   while (*str) {

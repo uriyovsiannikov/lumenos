@@ -45,11 +45,11 @@ LumenOS
 
 To build *LumenOS* you need to install some packages:
 
-> sudo apt-get install nasm grub2 xorriso make mtools gcc-multilib build-essential qemu-system-x86
+> sudo apt-get install nasm xorriso make gcc build-essential qemu
 
 Then execute:
 
-> make clean && make
+> make clean && make all
 
 And run:
 

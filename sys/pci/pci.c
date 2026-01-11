@@ -1,5 +1,6 @@
 #include "pci.h"
 #include "../sys/syslogger/syslogger.h"
+#include "../sys/mm/mm.h"
 #include "../libs/print.h"
 #include "../libs/string.h"
 #include "../sys/io/io.h"

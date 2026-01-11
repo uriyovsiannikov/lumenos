@@ -46,11 +46,10 @@ static const uint32_t multiboot_header[4] = {
 #define MULTIBOOT_INFO_VBE_INFO 0x00000800
 #define MULTIBOOT_INFO_FRAMEBUFFER_INFO 0x00001000
 #define FILENAME_LEN FS_FILENAME_LEN
-uint32_t current_dir_id = 0;
+uint32_t current_dir_id __attribute__((section(".data"))) = 0;
 int a = 0;
 static uint8_t heap_memory[HEAP_SIZE];
 int recover_mode = 0;
-void kernel_main(uint32_t magic, uint32_t *mb_info);
 typedef struct {
   uint32_t flags;
   uint32_t mem_lower;
@@ -115,7 +114,7 @@ static void booticon() {
   print("`---'`---'` ' '`---'`   '`---'`---'\n", GREEN);
 }
 static void init_state() {
-  a20_init();
+  //a20_init();
   mm_init(heap_memory, HEAP_SIZE);
   init_idt();
   fs_init();
@@ -139,9 +138,6 @@ static void create_syscfg() {
   fs_create("DATA", 1, current_dir_id, true);
   fs_create("TEMP", 1, current_dir_id, true);
   fs_create("USRDATA.SYS", 0, current_dir_id, true);
-}
-static void userspace() {
-    print("userspace init",RED);
 }
 void kernel_main(uint32_t magic, uint32_t *mb_info) {
   if (magic == MULTIBOOT_BOOTLOADER_MAGIC) {
@@ -168,7 +164,6 @@ void kernel_main(uint32_t magic, uint32_t *mb_info) {
   }
   print("Type 'help' for commands\n\n", WHITE);
   print_prompt();
-  userspace();
   log_message("System init end", LOG_INFO);
   while (1) {
     asm volatile("hlt");

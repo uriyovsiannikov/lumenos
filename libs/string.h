@@ -23,6 +23,7 @@ void trim_string(char *str);
 int sprintf(char *str, const char *format, ...);
 char *strncat(char *dest, const char *src, size_t n);
 int vsprintf(char *str, const char *format, va_list args);
+int vsnprintf(char *buffer, size_t size, const char *format, va_list args);
 char *strrchr(const char *str, int ch);
 int strcasecmp(const char *s1, const char *s2);
 #endif

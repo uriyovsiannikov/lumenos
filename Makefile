@@ -1,12 +1,12 @@
 CC = gcc
 ASM = nasm
 LD = ld
-QEMU = qemu-system-i386
+QEMU = /mnt/c/Program\ Files/qemu/qemu-system-i386.exe
 
 CFLAGS = -ffreestanding -fno-stack-protector -fno-pic -m32 \
          -Wall -Wextra -nostdlib -g -std=gnu99 -O0 \
          -Iinclude -Ilibs -Ikernel -Isys -Iapps -Idrivers \
-		 -w
+         -w -fno-stack-check
 
 ASMFLAGS = -f elf32 -g
 LDFLAGS = -m elf_i386 -T linker.ld -nostdlib
@@ -68,7 +68,7 @@ $(ISO): $(KERNEL)
 	@$(ASM) $(ASMFLAGS) $< -o $@
 
 run: $(ISO)
-	qemu-system-i386 -cdrom $(ISO) -serial stdio -vga std \
+	$(QEMU) -cdrom $(ISO) -serial stdio -vga std \
 	-audiodev sdl,id=audio0 -machine pcspk-audiodev=audio0 \
 	-drive file=disk.img,format=raw,if=ide,index=0,media=disk \
 	-m 64M
